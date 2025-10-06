@@ -1,28 +1,11 @@
-# 🌿 **Project Loan Origination System (LOS)**
+# 🌿 **Project CMS WEB SDN 01 MANGUHARJO)**
 
-**LOS** adalah aplikasi website untuk sistem manajemen pinjaman yang dirancang dengan frontend Next Js dan backend Laravel. Alur dari aplikasi ini dimulai dengan login user berdasarkan role yang ada atau membuat user baru. 
-beberapa role yang ada pada project ini :
+**=====================**
 1. Administrator
    ```bash
    email : admin@gmail.com
    password : 1
-   ```
-3. Approval
-   ```bash
-   email : approvel1@gmail.com
-   password : 1
-   ```
-5. Marketing
-   ```bash
-   email : marketing1@gmail.com
-   password : 1
-   ```
-jika membuat user baru maka akan role otomatis ke marketing
-admin bisa mengakses semua sidebar
-approval hanya bisa akses list pengajuan untuk persetujuan pengajuan
-marketing hanya bisa akses input data ke pemohon dan produk/pengajuan
-
----
+   ``
 
 ## **📌 Teknologi yang Digunakan**
 
@@ -44,7 +27,7 @@ Ikuti langkah-langkah berikut untuk menjalankan aplikasi frontend:
 1. Langkah Pertama clone project dari github dan buka pada text editor
 2. Navigasikan ke folder **`losfrontend`**:
    ```bash
-   cd losfrontend
+   cd frontend
    ```  
 3. Instal semua dependensi yang diperlukan:  
    ```bash
@@ -60,7 +43,7 @@ Ikuti langkah-langkah berikut untuk menjalankan aplikasi frontend:
 Langkah-langkah untuk mengatur backend menggunakan Laravel:  
 1. Navigasikan ke folder backend:  
    ```bash
-   cd losbackend
+   cd backend
    ```  
 2. Instal semua dependensi dengan Composer:  
    ```bash
@@ -80,20 +63,15 @@ Langkah-langkah untuk mengatur backend menggunakan Laravel:
    DB_CONNECTION=mysql
    DB_HOST=127.0.0.1
    DB_PORT=3306
-   DB_DATABASE=los
+   DB_DATABASE=websd_mangu
    DB_USERNAME=root
    DB_PASSWORD=
 
-   DB_CONNECTION_REAL_LOS=mysql
-   DB_HOST_REAL_LOS=127.0.0.1
-   DB_PORT_REAL_LOS=3306
-   DB_DATABASE_REAL_LOS=real_los
-   DB_USERNAME_REAL_LOS=root
-   DB_PASSWORD_REAL_LOS=
+   
    ```
 7. Jalankan server backend:  
    ```bash
-   php artisan serve --host=[ip_address] --port=8000
+   php artisan serve 
    ```  
 
 ---
