@@ -1,11 +1,18 @@
+<<<<<<< HEAD
 # 🌿 **Project Loan Origination System (LOS)**
 
 **LOS** adalah aplikasi website untuk sistem manajemen pinjaman yang dirancang dengan frontend Next Js dan backend Laravel. Alur dari aplikasi ini dimulai dengan login user berdasarkan role yang ada atau membuat user baru. 
 beberapa role yang ada pada project ini :
+=======
+# 🌿 **Project CMS WEB SDN 01 MANGUHARJO)**
+
+**=====================**
+>>>>>>> b9f3ecc9f9cb1e1f43b5eb8a9f55f49dfc621757
 1. Administrator
    ```bash
    email : admin@gmail.com
    password : 1
+<<<<<<< HEAD
    ```
 3. Approval
    ```bash
@@ -23,6 +30,9 @@ approval hanya bisa akses list pengajuan untuk persetujuan pengajuan
 marketing hanya bisa akses input data ke pemohon dan produk/pengajuan
 
 ---
+=======
+   ``
+>>>>>>> b9f3ecc9f9cb1e1f43b5eb8a9f55f49dfc621757
 
 ## **📌 Teknologi yang Digunakan**
 
@@ -44,7 +54,11 @@ Ikuti langkah-langkah berikut untuk menjalankan aplikasi frontend:
 1. Langkah Pertama clone project dari github dan buka pada text editor
 2. Navigasikan ke folder **`losfrontend`**:
    ```bash
+<<<<<<< HEAD
    cd losfrontend
+=======
+   cd frontend
+>>>>>>> b9f3ecc9f9cb1e1f43b5eb8a9f55f49dfc621757
    ```  
 3. Instal semua dependensi yang diperlukan:  
    ```bash
@@ -60,7 +74,11 @@ Ikuti langkah-langkah berikut untuk menjalankan aplikasi frontend:
 Langkah-langkah untuk mengatur backend menggunakan Laravel:  
 1. Navigasikan ke folder backend:  
    ```bash
+<<<<<<< HEAD
    cd losbackend
+=======
+   cd backend
+>>>>>>> b9f3ecc9f9cb1e1f43b5eb8a9f55f49dfc621757
    ```  
 2. Instal semua dependensi dengan Composer:  
    ```bash
@@ -80,6 +98,7 @@ Langkah-langkah untuk mengatur backend menggunakan Laravel:
    DB_CONNECTION=mysql
    DB_HOST=127.0.0.1
    DB_PORT=3306
+<<<<<<< HEAD
    DB_DATABASE=los
    DB_USERNAME=root
    DB_PASSWORD=
@@ -94,6 +113,17 @@ Langkah-langkah untuk mengatur backend menggunakan Laravel:
 7. Jalankan server backend:  
    ```bash
    php artisan serve --host=[ip_address] --port=8000
+=======
+   DB_DATABASE=websd_mangu
+   DB_USERNAME=root
+   DB_PASSWORD=
+
+   
+   ```
+7. Jalankan server backend:  
+   ```bash
+   php artisan serve 
+>>>>>>> b9f3ecc9f9cb1e1f43b5eb8a9f55f49dfc621757
    ```  
 
 ---

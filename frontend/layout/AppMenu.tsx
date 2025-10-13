@@ -86,7 +86,9 @@ const AppMenu = () => {
             items: [{ label: 'Admin Dashboard', icon: 'pi pi-fw pi-home', to: '/admin/' }]
         },
         ...(sidebar.some(item => item.status === 2 && item.sidebar_id > 7) ? [{
+
             label: 'Manajemen Conten ',
+
             items: sidebar
                 .filter(item => item.status === 2 && item.sidebar_id > 7)
                 .map(item => ({
@@ -95,7 +97,10 @@ const AppMenu = () => {
                     to: item.to_path
                 }))
         }] : []),
+
      
+
+
         ...(sidebar.some(item => item.status === 2 && item.sidebar_id === 7) ? [{
             label: 'Pengajuan Kredit',
             items: sidebar

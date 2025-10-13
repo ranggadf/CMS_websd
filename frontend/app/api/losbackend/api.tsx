@@ -141,6 +141,7 @@ export const API_ENDPOINTS = {
   DELETEPROFESISAMPAINGAN: (Kode: string) => `${api_url}/deleteprofesisampinganbyid/${Kode}`,
   CHECKCIF: (cif: string) => `${api_url}/check-cif/${cif}`,
 
+
    //Navbar
   GETNAVBAR: `${api_url}/getNavbar`,
   TAMBAHNAVBAR: `${api_url}/tambahNavbar`,
@@ -162,4 +163,5 @@ export const API_ENDPOINTS = {
   TAMBAHEkskul: `${api_url}/tambahEkskul`,
   UPDATEEkskul: (id: string) => `${api_url}/updateEkskul/${id}`,
   DELETEEkskul: (id: string) => `${api_url}/deleteEkskul/${id}`,
+
 };

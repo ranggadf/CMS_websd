@@ -4,16 +4,23 @@ import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
+<<<<<<< HEAD
 import { Dropdown } from 'primereact/dropdown';
 import { FileUpload } from 'primereact/fileupload';
 
 const DataTableWithCRUD = ({
     data,
     data2,
+=======
+
+const DataTableWithCRUD = ({
+    data,
+>>>>>>> b9f3ecc9f9cb1e1f43b5eb8a9f55f49dfc621757
     onAdd,
     onUpdate,
     onDelete,
     columns,
+<<<<<<< HEAD
     singleInput = false,
     imageInput = false,
     idField = 'Kode',
@@ -22,23 +29,32 @@ const DataTableWithCRUD = ({
     nameField3 = '',
     nameField4 = '',
     nameField5 = '',
+=======
+    idField = 'Kode',
+    nameField = 'Keterangan',
+>>>>>>> b9f3ecc9f9cb1e1f43b5eb8a9f55f49dfc621757
     addButtonLabel = 'Tambah',
     editButtonLabel = 'Perbarui',
     deleteButtonLabel = 'Hapus',
     addDialogHeader = 'Tambah Data',
     editDialogHeader = 'Edit Data',
     deleteDialogHeader = 'Hapus Data',
+<<<<<<< HEAD
     inputLabel = 'Data',
     inputLabel2 = 'Data',
     inputLabel3 = 'Data',
     inputLabel4 = 'Data',
     inputLabel5 = 'Data',
+=======
+    inputLabel = 'Data'
+>>>>>>> b9f3ecc9f9cb1e1f43b5eb8a9f55f49dfc621757
 }: any) => {
     const [selectedRow, setSelectedRow] = useState<any>(null);
     const [visibleAdd, setVisibleAdd] = useState(false);
     const [visibleEdit, setVisibleEdit] = useState(false);
     const [visibleDelete, setVisibleDelete] = useState(false);
     const [inputValue, setInputValue] = useState('');
+<<<<<<< HEAD
     const [inputValue2, setInputValue2] = useState('');
     const [inputValue3, setInputValue3] = useState('');
     const [editValue, setEditValue] = useState('');
@@ -55,10 +71,19 @@ const DataTableWithCRUD = ({
         }
         setInputValue('');
         setInputValue2('');
+=======
+    const [editValue, setEditValue] = useState('');
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        onAdd(inputValue);
+        setInputValue('');
+>>>>>>> b9f3ecc9f9cb1e1f43b5eb8a9f55f49dfc621757
         setVisibleAdd(false);
     };
 
     const handleUpdate = () => {
+<<<<<<< HEAD
         if (singleInput) {
             onUpdate(selectedRow[idField], editValue);// Send only inputValue
         } else {
@@ -67,12 +92,17 @@ const DataTableWithCRUD = ({
         }
         setEditValue('');
         setEditValue2('');
+=======
+        onUpdate(selectedRow[idField], editValue);
+        setEditValue('');
+>>>>>>> b9f3ecc9f9cb1e1f43b5eb8a9f55f49dfc621757
         setVisibleEdit(false);
     };
 
     return (
         <div className='mb-5'>
             <div className='mb-2 flex justify-content-end'>
+<<<<<<< HEAD
                 <Button label={addButtonLabel} icon="pi pi-plus" style={{ border: 'none', color: '#333', transition: 'transform 0.3s ease-in-out' }} className='bg-blue-200 w-full sm:w-auto hover:scale-110' onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'} onClick={() => setVisibleAdd(true)} />
             </div>
             <DataTable value={data} responsiveLayout="stack" breakpoint="960px" paginator rows={5} rowsPerPageOptions={[5, 10]}>
@@ -90,11 +120,28 @@ const DataTableWithCRUD = ({
                             //set nilai awal edit
                             setEditValue2(matchedValue);
                         }
+=======
+                <Button label={addButtonLabel} icon="pi pi-plus" style={{ border: 'none', color: '#333',  transition: 'transform 0.3s ease-in-out' }} className='bg-blue-200 w-full sm:w-auto hover:scale-110' onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'} onClick={() => setVisibleAdd(true)} />
+            </div>
+            <DataTable value={data} responsiveLayout="stack" breakpoint="960px" paginator rows={5} rowsPerPageOptions={[5, 10]}>
+                <Column key="Kode" field="Kode" header="Kode" className='w-full sm:w-2'/>
+                {columns.map((col: any) => (
+                    <Column key={col.field} field={col.field} header={col.header} className={columns.length === 1 ? 'w-full sm:w-7' : 'w-full sm:w-4'}/>
+                ))}
+                <Column header="Perbarui" body={(rowData) => (
+                    <Button icon="pi pi-pencil" style={{color: '#000000', transition: 'transform 0.3s ease-in-out' }} className='bg-blue-200 border-transparent hover:scale-110' onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'} onClick={() => {
+                        setSelectedRow(rowData);
+                        setEditValue(rowData[nameField]);
+>>>>>>> b9f3ecc9f9cb1e1f43b5eb8a9f55f49dfc621757
                         setVisibleEdit(true);
                     }} />
                 )} />
                 <Column header="Hapus" body={(rowData) => (
+<<<<<<< HEAD
                     <Button icon="pi pi-trash" style={{ color: '#000000', transition: 'transform 0.3s ease-in-out' }} className='bg-red-200 border-transparent hover:scale-110' onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'} onClick={() => {
+=======
+                    <Button icon="pi pi-trash" style={{color: '#000000', transition: 'transform 0.3s ease-in-out' }} className='bg-red-200 border-transparent hover:scale-110' onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'} onClick={() => {
+>>>>>>> b9f3ecc9f9cb1e1f43b5eb8a9f55f49dfc621757
                         setSelectedRow(rowData);
                         setVisibleDelete(true);
                         console.log(rowData);
@@ -111,6 +158,7 @@ const DataTableWithCRUD = ({
             <Dialog header={addDialogHeader} visible={visibleAdd} style={{ width: '90vw', maxWidth: '500px' }} onHide={() => setVisibleAdd(false)}>
                 <div className="p-fluid mb-5">
                     <form onSubmit={handleSubmit}>
+<<<<<<< HEAD
                         {/* {!singleInput && (
                             <div className="field">
                                 <label htmlFor="dropdown" className='font-bold'>{inputLabel4}</label>
@@ -163,12 +211,21 @@ const DataTableWithCRUD = ({
                         </div> */}
                         <div className='flex flex-column sm:flex-row justify-content-end mt-3'>
                             <Button className='w-full sm:w-4' type="submit" label="Simpan" icon="pi pi-check" />
+=======
+                        <div className="field">
+                            <label htmlFor="inputValue" className='font-bold'>{inputLabel}</label>
+                            <div className='flex flex-column sm:flex-row gap-3 align-items-center'>
+                                <InputText id="inputValue" value={inputValue} onChange={(e) => setInputValue(e.target.value)} required className="w-full sm:w-8" />
+                                <Button className='w-full sm:w-4' type="submit" label="Simpan" icon="pi pi-check" />
+                            </div>
+>>>>>>> b9f3ecc9f9cb1e1f43b5eb8a9f55f49dfc621757
                         </div>
                     </form>
                 </div>
             </Dialog>
             <Dialog header={`${editDialogHeader}: ${selectedRow?.[nameField]}`} visible={visibleEdit} style={{ width: '90vw', maxWidth: '500px' }} onHide={() => setVisibleEdit(false)}>
                 <div className="p-fluid">
+<<<<<<< HEAD
                     {
                         //dropdown edit data parent
                     }
@@ -203,6 +260,11 @@ const DataTableWithCRUD = ({
                             onChange={(e) => setEditValue2(e.target.value)}
                             className="w-full"
                         />
+=======
+                    <div className="field">
+                        <label htmlFor="editValue" className='font-bold'>{inputLabel}</label>
+                        <InputText id="editValue" value={editValue} onChange={(e) => setEditValue(e.target.value)} required className="w-full" />
+>>>>>>> b9f3ecc9f9cb1e1f43b5eb8a9f55f49dfc621757
                     </div>
                     <div className='flex flex-column sm:flex-row justify-content-end mt-3'>
                         <Button label="Batal" icon="pi pi-times" onClick={() => setVisibleEdit(false)} className="p-button-text w-full sm:w-3 mb-2 sm:mb-0 sm:mr-2 " />

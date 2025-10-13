@@ -93,7 +93,8 @@ const Adminpage = () => {
                 </div>
             </div>
             <h5>Details</h5>
-            
+
+
         </div>
     );
 }

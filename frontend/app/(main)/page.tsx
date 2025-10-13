@@ -1,6 +1,10 @@
 'use client';
 import React, { useContext, useEffect, useRef, useState } from 'react';
+
 // import Debiturpage from '../(full-page)/admin/debitur/page';
+
+import Debiturpage from '../(full-page)/admin/debitur/page';
+
 import axios from 'axios';
 import { API_ENDPOINTS } from '../api/losbackend/api';
 
@@ -93,7 +97,10 @@ const Dashboard = () => {
                 </div>
             </div>
             <h5>Details</h5>
-            {/* <Debiturpage /> */}
+
+
+            <Debiturpage />
+
         </div>
     );
 };
