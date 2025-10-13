@@ -1,13 +1,13 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
-import { Toast } from 'primereact/toast';
 import axios from 'axios';
-import { API_ENDPOINTS } from '@/app/api/losbackend/api';
-import DataTableWithCRUD from '@/app/(full-page)/component/datablefasilitas/page';
+import { Toast } from 'primereact/toast';
 import { ProgressSpinner } from 'primereact/progressspinner';
+import DataTableWithCRUD from '@/app/(full-page)/component/datablefasilitas/page';
+import { API_ENDPOINTS } from '@/app/api/losbackend/api';
 
-const TambahSectionStory = () => {
-    const [storySections, setStorySections] = useState<any[]>([]);
+const FasilitasPage = () => {
+    const [fasilitas, setFasilitas] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const toast = useRef<Toast>(null);
 
@@ -15,11 +15,12 @@ const TambahSectionStory = () => {
         fetchData();
     }, []);
 
+    // 🔹 Ambil data fasilitas
     const fetchData = async () => {
         setIsLoading(true);
         try {
-            const response = await axios.get(API_ENDPOINTS.GETFasilitas);
-            setStorySections(response.data);
+            const res = await axios.get(API_ENDPOINTS.GETFasilitas);
+            setFasilitas(res.data);
         } catch (error) {
             console.error('Error fetching data:', error);
             toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Gagal mengambil data', life: 3000 });
@@ -28,63 +29,69 @@ const TambahSectionStory = () => {
         }
     };
 
-    const handleAdd = async (section: string, judul: string, deskripsi: string, contentList: any[]) => {
-        const formData = new FormData();
-
-        contentList.forEach((item, index) => {
-    
-            formData.append(`sections[${index}][judul]`, judul);
-            formData.append(`sections[${index}][deskripsi]`, deskripsi);
-         
-
-            if (item.image && item.image[0] instanceof File) {
-                formData.append(`sections[${index}][Gambar]`, item.image[0]);
-            }
-        });
-
+    // 🔹 Tambah data
+    const handleAdd = async (judul: string, deskripsi: string, gambar: File | null) => {
         try {
             setIsLoading(true);
-            const response = await axios.post(API_ENDPOINTS.TAMBAHFasilitas, formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
+
+            const formData = new FormData();
+            formData.append('judul', judul);
+            formData.append('deskripsi', deskripsi);
+            if (gambar instanceof File) {
+                formData.append('Gambar', gambar);
+            }
+
+            const res = await axios.post(API_ENDPOINTS.TAMBAHFasilitas, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
             });
 
-            if (response.data.message) {
-                toast.current?.show({ severity: 'success', summary: 'Sukses', detail: 'Data berhasil ditambahkan', life: 3000 });
+            if (res.data.message) {
+                toast.current?.show({ severity: 'success', summary: 'Sukses', detail: 'Fasilitas berhasil ditambahkan', life: 3000 });
+                fetchData();
             }
-            fetchData();
         } catch (error) {
             console.error('Gagal menambah data:', error);
-            toast.current?.show({ severity: 'error', summary: 'Gagal', detail: 'Gagal menambah data', life: 3000 });
+            toast.current?.show({ severity: 'error', summary: 'Gagal', detail: 'Gagal menambah fasilitas', life: 3000 });
         } finally {
             setIsLoading(false);
         }
     };
 
-    const handleUpdate = async (id: string, judul: string, deskripsi: string) => {
+    // 🔹 Update data
+    const handleUpdate = async (id: string, judul: string, deskripsi: string, gambar: File | null) => {
         try {
             setIsLoading(true);
-            await axios.put(API_ENDPOINTS.UPDATEFasilitas(id), { judul, deskripsi });
-            toast.current?.show({ severity: 'success', summary: 'Sukses', detail: 'Data berhasil diupdate', life: 3000 });
+
+            const formData = new FormData();
+            if (judul) formData.append('judul', judul);
+            if (deskripsi) formData.append('deskripsi', deskripsi);
+            if (gambar instanceof File) formData.append('gambar', gambar);
+            formData.append('_method', 'PUT');
+
+            await axios.post(API_ENDPOINTS.UPDATEFasilitas(id), formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+            });
+
+            toast.current?.show({ severity: 'success', summary: 'Sukses', detail: 'Fasilitas berhasil diupdate', life: 3000 });
             fetchData();
         } catch (error) {
             console.error('Error updating data:', error);
-            toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Gagal update data', life: 3000 });
+            toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Gagal update fasilitas', life: 3000 });
         } finally {
             setIsLoading(false);
         }
     };
 
+    // 🔹 Hapus data
     const handleDelete = async (id: string) => {
         try {
             setIsLoading(true);
             await axios.delete(API_ENDPOINTS.DELETEFasilitas(id));
-            toast.current?.show({ severity: 'success', summary: 'Sukses', detail: 'Data berhasil dihapus', life: 3000 });
+            toast.current?.show({ severity: 'success', summary: 'Sukses', detail: 'Fasilitas berhasil dihapus', life: 3000 });
             fetchData();
         } catch (error) {
             console.error('Error deleting data:', error);
-            toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Gagal hapus data', life: 3000 });
+            toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Gagal hapus fasilitas', life: 3000 });
         } finally {
             setIsLoading(false);
         }
@@ -99,14 +106,11 @@ const TambahSectionStory = () => {
                 </div>
             ) : (
                 <DataTableWithCRUD
-                    data={storySections}
+                    data={fasilitas}
                     loading={isLoading}
-                    singleInput={false}
                     columns={[
-                      
                         { field: 'judul', header: 'Judul' },
                         { field: 'deskripsi', header: 'Deskripsi' },
-                      
                         { field: 'Gambar', header: 'Gambar' },
                     ]}
                     onAdd={handleAdd}
@@ -115,14 +119,13 @@ const TambahSectionStory = () => {
                     nameField="judul"
                     nameField2="deskripsi"
                     nameField3="Gambar"
-                    inputLabel="judul"
-                    inputLabel2="deskripsi"
+                    inputLabel="Judul"
+                    inputLabel2="Deskripsi"
                     inputLabel3="Gambar"
-                    
                 />
             )}
         </>
     );
 };
 
-export default TambahSectionStory;
+export default FasilitasPage;

@@ -141,6 +141,7 @@ export const API_ENDPOINTS = {
   DELETEPROFESISAMPAINGAN: (Kode: string) => `${api_url}/deleteprofesisampinganbyid/${Kode}`,
   CHECKCIF: (cif: string) => `${api_url}/check-cif/${cif}`,
 
+  //sdmangu
 
    //Navbar
   GETNAVBAR: `${api_url}/getNavbar`,
@@ -164,4 +165,10 @@ export const API_ENDPOINTS = {
   UPDATEEkskul: (id: string) => `${api_url}/updateEkskul/${id}`,
   DELETEEkskul: (id: string) => `${api_url}/deleteEkskul/${id}`,
 
+    //Berita
+  GETBerita: `${api_url}/getBerita`,  
+  TAMBAHBerita: `${api_url}/tambahBerita`,
+  UPDATEBerita: (id: string) => `${api_url}/updateBerita/${id}`,
+  DELETEBerita: (id: string) => `${api_url}/deleteBerita/${id}`,
+ 
 };

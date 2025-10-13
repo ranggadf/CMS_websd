@@ -12,13 +12,14 @@ use App\Http\Controllers\RegisterNasabahController;
 use App\Http\Controllers\SidebarController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\UserController;
-<<<<<<< HEAD
+use App\Http\Controllers\BeritaController;
+
 use App\Http\Controllers\EkstrakulikulerController;
 use App\Http\Controllers\NavbarController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\FasilitasController;
-=======
->>>>>>> b9f3ecc9f9cb1e1f43b5eb8a9f55f49dfc621757
+
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -175,7 +176,6 @@ Route::get('/check-cif/{cif}', [PemohonController::class, 'checkCif']);
 
 //verify user
 Route::post('/verify-user', [UserController::class, 'verifyUser']); //verify user
-<<<<<<< HEAD
 
 //navbar
 Route::get('/navbar', [NavbarController::class, 'getNavbar']);
@@ -205,5 +205,10 @@ Route::get('/getEkskul', [EkstrakulikulerController::class, 'getEkskul']);
 Route::put('/updateEkskul/{id}', [EkstrakulikulerController::class, 'updateEkskul']); 
 Route::delete('/deleteEkskul/{id}', [EkstrakulikulerController::class, 'deleteEkskul']); 
 Route::get('/getEkskulbyId/{id}', [EkstrakulikulerController::class, 'getEkskulById']);
-=======
->>>>>>> b9f3ecc9f9cb1e1f43b5eb8a9f55f49dfc621757
+
+//berita
+Route::post('/tambahBerita', [BeritaController::class, 'tambahBerita']);
+Route::get('/getBerita', [BeritaController::class, 'getBerita']); 
+Route::put('/updateBerita/{id}', [BeritaController::class, 'updateBerita']); 
+Route::delete('/deleteBerita/{id}', [BeritaController::class, 'deleteBerita']); 
+Route::get('/getBeritaById/{id}', [BeritaController::class, 'getBeritaByID']);
