@@ -35,8 +35,10 @@ const TambahSectionStory = () => {
             formData.append(`sections[${index}][section]`, section);
             formData.append(`sections[${index}][judul]`, judul);
             formData.append(`sections[${index}][deskripsi]`, deskripsi);
-            formData.append(`sections[${index}][jumlah_siswa]`, item.jumlah_siswa);
-            formData.append(`sections[${index}][jenis_kelamin]`, item.jenis_kelamin);
+            formData.append(`sections[${index}][jml_siswa_laki]`, item.jml_siswa_laki);
+            formData.append(`sections[${index}][jml_siswa_perempuan]`, item.jml_siswa_perempuan);
+            formData.append(`sections[${index}][nama]`, item.nama);
+             formData.append(`sections[${index}][total_siswa]`, item.total_siswa);
 
             if (item.image && item.image[0] instanceof File) {
                 formData.append(`sections[${index}][Gambar]`, item.image[0]);
@@ -68,9 +70,11 @@ const TambahSectionStory = () => {
   section: string,
   judul: string,
   deskripsi: string,
-  jumah_siswa: string,
-  jenis_kelamin: string,
-  Gambar: File | null
+  jml_siswa_laki: string,
+  jml_siswa_perempuan: string,
+  Gambar: File | null,
+   nama: string,
+   total_siswa: string
 ) => {
   try {
     setIsLoading(true);
@@ -81,8 +85,10 @@ const TambahSectionStory = () => {
     if (section) formData.append('section', section);
     if (judul) formData.append('judul', judul);
     if (deskripsi) formData.append('deskripsi', deskripsi);
-    if (jumah_siswa) formData.append('jumah_siswa', jumah_siswa);
-    if (jenis_kelamin) formData.append('jenis_kelamin', jenis_kelamin);
+    if (jml_siswa_laki) formData.append('jml_siswa_laki', jml_siswa_laki);
+    if (jml_siswa_perempuan) formData.append('jml_siswa_perempuan', jml_siswa_perempuan);
+    if (nama) formData.append('nama', nama);
+    if (total_siswa) formData.append('total_siswa', total_siswa);
 
     // Kirim gambar hanya jika File
     if (Gambar instanceof File) {
@@ -140,9 +146,11 @@ const TambahSectionStory = () => {
                         { field: 'section', header: 'Section' },
                         { field: 'judul', header: 'Judul' },
                         { field: 'deskripsi', header: 'Deskripsi' },
-                        { field: 'jumlah_siswa', header: 'jumlah_siswa' },
-                        { field: 'jenis_kelamin', header: 'jenis_kelamin' },
+                        { field: 'jml_siswa_laki', header: 'jml_siswa_laki' },
+                        { field: 'jml_siswa_perempuan', header: 'jml_siswa_perempuan' },
                         { field: 'Gambar', header: 'Gambar' },
+                        { field: 'nama', header: 'nama' },
+                        { field: 'total_siswa', header: 'total_siswa' },
                     ]}
                     onAdd={handleAdd}
                     onUpdate={handleUpdate}
@@ -150,15 +158,19 @@ const TambahSectionStory = () => {
                     nameField="section"
                     nameField2="judul"
                     nameField3="deskripsi"
-                    nameField4="jumlah_siswa"
-                    nameField5="jenis_kelamin"
+                    nameField4="jml_siswa_laki"
+                    nameField5="jml_siswa_perempuan"
                     nameField6="Gambar"
+                        nameField7="nama"
+                        nameField8="total_siswa"
                     inputLabel="Section"
                     inputLabel2="Judul"
                     inputLabel3="Deskripsi"
-                    inputLabel4="jumlah_siswa"
-                    inputLabel5="jenis_kelamin"
+                    inputLabel4="jml_siswa_laki"
+                    inputLabel5="jml_siswa_perempuan"
                     inputLabel6="Gambar"
+                       inputLabel7="nama"
+                       inputLabel8="total_siswa"
                 />
             )}
         </>

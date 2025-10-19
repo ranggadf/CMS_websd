@@ -27,9 +27,11 @@ const DataTableWithCRUD = ({
     nameField = 'section',
     nameField2 = 'judul',
     nameField3 = 'deskripsi',
-    nameField4 = 'jumlah_siswa',
-    nameField5 = 'jenis_kelamin',
+    nameField4 = 'jml_siswa_laki',
+    nameField5 = 'jml_siswa_perempuan',
     nameField6 = 'Gambar',
+    nameField7 = 'nama',
+    nameField8 = 'total_siswa',
     addButtonLabel = 'Tambah',
     editButtonLabel = 'Perbarui',
     deleteButtonLabel = 'Hapus',
@@ -41,7 +43,9 @@ const DataTableWithCRUD = ({
     inputLabel3 = 'Data',
     inputLabel4 = 'Data',
     inputLabel5 = 'Data',
-    inputLabel6 = 'Data'
+    inputLabel6 = 'Data',
+    inputLabel7 = 'Data',
+    inputLabel8 = 'Data'
 
 }: any) => {
     const [selectedRow, setSelectedRow] = useState<any>(null);
@@ -54,12 +58,16 @@ const DataTableWithCRUD = ({
     const [inputValue4, setInputValue4] = useState('');
     const [inputValue5, setInputValue5] = useState('');
     const [inputValue6, setInputValue6] = useState('');
+    const [inputValue7, setInputValue7] = useState('');
+    const [inputValue8, setInputValue8] = useState('');
     const [editValue, setEditValue] = useState('');
     const [editValue2, setEditValue2] = useState('');
     const [editValue3, setEditValue3] = useState('');
     const [editValue4, setEditValue4] = useState<any>('');
     const [editValue5, setEditValue5] = useState('');
     const [editValue6, setEditValue6] = useState('');
+     const [editValue7, setEditValue7] = useState('');
+      const [editValue8, setEditValue8] = useState('');
     
     const [selectedImage, setSelectedImage] = useState<string | null>(null); // untuk preview gambar
     const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null); // untuk upload
@@ -71,7 +79,7 @@ const DataTableWithCRUD = ({
     });
     //const [sectionContents, setSectionContents] = useState<{ [key: string]: { id: number }[] }>({});
     const [sectionContents, setSectionContents] = useState<{
-        [key: string]: { id: number; section: string, judul: string, deskripsi: string, jumlah_siswa: string, jenis_kelamin: string }[];
+        [key: string]: { id: number; section: string, judul: string, deskripsi: string, jml_siswa_laki: string, jml_siswa_perempuan: string, nama: string, total_siswa: string }[];
     }>({});
 
 
@@ -84,7 +92,7 @@ const DataTableWithCRUD = ({
         if (!sectionContents[value]) {
             setSectionContents(prev => ({
                 ...prev,
-                [value]: [{ id: Date.now(), section: "", judul: "", deskripsi: "", jumlah_siswa: "", jenis_kelamin: "" }] // Tambahkan field baru sesuai kebutuhan
+                [value]: [{ id: Date.now(), section: "", judul: "", deskripsi: "", jml_siswa_laki: "", jml_siswa_perempuan: "", nama: "", total_siswa: "" }] // Tambahkan field baru sesuai kebutuhan
             }));
         }
     };
@@ -92,7 +100,7 @@ const DataTableWithCRUD = ({
     const handleContentChange = (
         sectionKey: string,
         contentId: number,
-        fieldName: 'section' | 'judul' | 'deskripsi' | 'jumlah_siswa' | 'jenis_kelamin',
+        fieldName: 'section' | 'judul' | 'deskripsi' | 'jml_siswa_laki' | 'jml_siswa_perempuan' | 'nama' | 'total_siswa',
         newText: string
     ) => {
         console.log('sectionKey:', sectionKey);
@@ -123,8 +131,10 @@ const DataTableWithCRUD = ({
                     section: "",
                     judul: "",
                     deskripsi: "",
-                    jumlah_siswa: "",
-                    jenis_kelamin: "",
+                    jml_siswa_laki: "",
+                    jml_siswa_perempuan: "",
+                    nama: "",
+                    total_siswa: ""
 
                 }
             ]
@@ -156,6 +166,8 @@ const DataTableWithCRUD = ({
         setInputValue4('');
         setInputValue5('');
         setInputValue6('');
+        setInputValue7('');
+        setInputValue8('');
         setVisibleAdd(false);
     };
 
@@ -174,6 +186,8 @@ const DataTableWithCRUD = ({
         setEditValue4('');
         setEditValue5('');
         setEditValue6('');
+        setEditValue7('');
+        setEditValue8('');
         setSelectedImageFile(null);
         setVisibleEdit(false);
     };
@@ -264,7 +278,7 @@ const DataTableWithCRUD = ({
                             <Dropdown
                                 id="dropdown"
                                 value={inputValue}
-                                options={[...Array(3)].map((_, i) => ({ id_section: (i + 1).toString() }))}
+                                options={[...Array(4)].map((_, i) => ({ id_section: (i + 1).toString() }))}
                                 // onChange={(e) => {
                                 //     setInputValue(e.value);
                                 //     console.log("Yang dipilih:", e.value)
@@ -324,9 +338,107 @@ const DataTableWithCRUD = ({
                         ))}
 
                         {/* SECTION 2 */}
-                      {inputValue === "3" && (sectionContents[inputValue] || []).map((item) => (
+                         {inputValue === "2" && (sectionContents[inputValue] || []).map((item, index) => (
+                            <fieldset key={item.id} className="mb-4 p-4 border-round">
+                                <legend className='text-xl font-bold'>Content Section 2</legend>
+                                <div className='justify-content-between w-full'>
+                                <div className="mb-4">
+                                            <FileUpload
+                  name="media"
+                  multiple
+                  accept="image/*"
+                  maxFileSize={1000000}
+                  onSelect={(e) => handleImageChange(item.id, e)}
+                  emptyTemplate={<p className="m-0">Seret dan lepas file di sini atau klik untuk memilih.</p>}
+                  chooseLabel="Pilih File"
+                  cancelLabel="Batal"
+                  customUpload
+                  className="w-full"
+                  uploadHandler={handleImageUpload}
+                />
+                                        </div>
+                                   <div className='field'>
+  <label htmlFor={`nama-${item.id}`} className='font-bold'>
+    {inputLabel7}
+  </label>
+  <InputText
+    id={`nama-${item.id}`}
+    type="text" // ✅ teks biasa
+    value={item.nama}
+    onChange={(e) =>
+      handleContentChange(inputValue, item.id, 'nama', e.target.value)
+    }
+    placeholder="Masukkan nama"
+    className="w-full"
+  />
+</div>
+
+                            
+                                </div>
+                            </fieldset>
+                        ))}
+
+                         {/* SECTION 3 */}
+                         {inputValue === "3" && (sectionContents[inputValue] || []).map((item, index) => (
+                            <fieldset key={item.id} className="mb-4 p-4 border-round">
+                                <legend className='text-xl font-bold'>Content Section 3</legend>
+                                <div className='justify-content-between w-full'>
+                                <div className="mb-4">
+                                            
+                                        </div>
+                                    <div className='field'>
+                                        <label htmlFor={`jml_siswa_laki-${item.id}`} className='font-bold'>{inputLabel4}</label>
+                                      <InputText
+                                        id={`jml_siswa_laki-${item.id}`}
+                                        type="number"
+                                        inputMode="numeric"
+                                        pattern="[0-9]*"
+                                        min={0}
+                                        value={item.jml_siswa_laki}
+                                        onChange={(e) =>
+                                            handleContentChange(inputValue, item.id, 'jml_siswa_laki', e.target.value)
+                                        }
+                                        className="no-spinner"
+                                        />
+                                    </div>
+                                  <div className='field'>
+                                        <label htmlFor={`jml_siswa_perempuan-${item.id}`} className='font-bold'>{inputLabel5}</label>
+                                      <InputText
+                                        id={`jml_siswa_perempuan-${item.id}`}
+                                        type="number"
+                                        inputMode="numeric"
+                                        pattern="[0-9]*"
+                                        min={0}
+                                        value={item.jml_siswa_perempuan}
+                                        onChange={(e) =>
+                                            handleContentChange(inputValue, item.id, 'jml_siswa_perempuan', e.target.value)
+                                        }
+                                        className="no-spinner"
+                                        />
+                                    </div>
+                                        <div className='field'>
+                                        <label htmlFor={`total_siswa-${item.id}`} className='font-bold'>{inputLabel8}</label>
+                                        <InputText
+                                        id={`total_siswa-${item.id}`}
+                                        type="number"
+                                        inputMode="numeric"
+                                        pattern="[0-9]*"
+                                        min={0}
+                                        value={item.total_siswa}
+                                        onChange={(e) =>
+                                            handleContentChange(inputValue, item.id, 'total_siswa', e.target.value)
+                                        }
+                                        className="no-spinner"
+                                        />
+                                    </div>
+                                </div>
+                            </fieldset>
+                        ))}
+
+                        {/* SECTION 4 */}
+                      {inputValue === "4" && (sectionContents[inputValue] || []).map((item) => (
         <fieldset key={item.id} className="mb-4 p-4 border-round">
-          <legend className='text-xl font-bold'>Content Section 2</legend>
+          <legend className='text-xl font-bold'>Content Section 4</legend>
           <div className='justify-content-between w-full'>
             <div className='field'>
               <label htmlFor="icon" className='font-bold'>{inputLabel6}</label>
@@ -350,51 +462,7 @@ const DataTableWithCRUD = ({
         </fieldset>
       ))}
 
-                         {/* SECTION 3 */}
-                         {inputValue === "2" && (sectionContents[inputValue] || []).map((item, index) => (
-                            <fieldset key={item.id} className="mb-4 p-4 border-round">
-                                <legend className='text-xl font-bold'>Content Section 3</legend>
-                                <div className='justify-content-between w-full'>
-                                <div className="mb-4">
-                                            <FileUpload
-                                                name="media"
-                                                multiple
-                                                accept="image/*"
-                                                maxFileSize={1000000}
-                                                onSelect={(e) => handleImageChange(item.id, e)}
-                                                emptyTemplate={<p className="m-0">Seret dan lepas file di sini atau klik untuk memilih.</p>}
-                                                chooseLabel="Pilih File"
-                                                cancelLabel="Batal"
-                                                customUpload
-                                                className="w-full"
-                                                uploadHandler={handleImageUpload}
-                                            />
-                                        </div>
-                                    <div className='field'>
-                                        <label htmlFor={`jumlah_siswa-${item.id}`} className='font-bold'>{inputLabel4}</label>
-                                        <InputText
-                                            id={`jumlah_siswa-${item.id}`}
-                                            value={item.jumlah_siswa}
-                                            onChange={(e) =>
-                                                handleContentChange(inputValue, item.id, 'jumlah_siswa', e.target.value)
-                                            }
-                                           
-                                        />
-                                    </div>
-                                    <div className='field'>
-                                        <label htmlFor={`jenis_kelamin-${item.id}`} className='font-bold'>{inputLabel5}</label>
-                                        <InputText
-                                            id={`jenis_kelamin-${item.id}`}
-                                            value={item.jenis_kelamin}
-                                            onChange={(e) =>
-                                                handleContentChange(inputValue, item.id, 'jenis_kelamin', e.target.value)
-                                            }
-                                            
-                                        />
-                                    </div>
-                                </div>
-                            </fieldset>
-                        ))}
+                        
 
                         <div className='flex flex-column sm:flex-row justify-content-between mt-3'>
                             <Button label={addButtonLabel} onClick={handleAddContent} icon="pi pi-plus" style={{ border: 'none', color: '#fff' }} className='bg-[#6366f1] w-full sm:w-auto' type='button' />

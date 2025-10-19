@@ -25,7 +25,7 @@ class FasilitasController extends Controller
         if ($request->hasFile('Gambar')) {
             $file = $request->file('Gambar');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('images/fasilitas'), $filename);
+            $file->move(public_path('images/fasilitas/'), $filename);
             $fasilitas->Gambar = 'images/fasilitas/' . $filename;
         }
 
@@ -74,14 +74,14 @@ public function getFasilitas()
 
         // Jika upload gambar baru
         if ($request->hasFile('gambar')) {
-            if ($fasilitas->Gambar && File::exists(public_path($fasilitas->Gambar))) {
-                File::delete(public_path($fasilitas->Gambar));
+            if ($fasilitas->gambar && File::exists(public_path($fasilitas->gambar))) {
+                File::delete(public_path($fasilitas->gambar));
             }
 
             $file = $request->file('gambar');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('images/fasilitas'), $filename);
-            $fasilitas->Gambar = 'images/fasilitas/' . $filename;
+            $file->move(public_path('images/fasilitas/'), $filename);
+            $fasilitas->gambar = 'images/fasilitas/' . $filename;
         }
 
         $fasilitas->save();

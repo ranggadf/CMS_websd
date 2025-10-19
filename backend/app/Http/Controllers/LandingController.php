@@ -24,8 +24,10 @@ class LandingController extends Controller
                     'section'    => 'required|string',
                     'judul'      => 'nullable|string',
                     'deskripsi'  => 'nullable|string',
-                    'jumlah_siswa' => 'nullable|string',
-                    'jenis_kelamin'    => 'nullable|string',
+                    'jml_siswa_laki' => 'nullable|string',
+                    'jml_siswa_perempuan'    => 'nullable|string',
+                    'nama'    => 'nullable|string',
+                    'total_siswa'    => 'nullable|string',
                 ]);
 
                 if ($validator->fails()) {
@@ -36,8 +38,10 @@ class LandingController extends Controller
                 $data->section    = $sectionData['section'];
                 $data->judul      = $sectionData['judul']?? null;
                 $data->deskripsi  = $sectionData['deskripsi'?? null];
-                $data->jumlah_siswa = $sectionData['story'] ?? null;
-                $data->jenis_kelamin    = $sectionData['jenis_kelamin'] ?? null;
+                $data->jml_siswa_laki = $sectionData['jml_siswa_laki'] ?? null;
+                $data->jml_siswa_perempuan    = $sectionData['jml_siswa_perempuan'] ?? null;
+                $data->nama    = $sectionData['nama'] ?? null;
+                $data->total_siswa    = $sectionData['total_siswa'] ?? null;
 
                 // Proses upload gambar
                 if ($request->hasFile("sections.$index.Gambar")) {
@@ -112,7 +116,7 @@ class LandingController extends Controller
         }
 
         // Update field-field lainnya
-        $fields = ['section', 'judul', 'deskripsi', 'jumlah_siswa', 'jenis_kelamin'];
+        $fields = ['section', 'judul', 'deskripsi', 'jml_siswa_laki', 'jml_siswa_perempuan', 'nama', 'total_siswa'];
         foreach ($fields as $field) {
             if ($request->filled($field)) {
                 $data->$field = $request->input($field);

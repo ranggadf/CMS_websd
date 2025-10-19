@@ -15,8 +15,10 @@ class SectionLanding extends Model
         'section',
         'judul',
         'deskripsi',
-        'jumlah_siswa',
-        'jenis_kelamin',
-        'Gambar'
+        'jml_siswa_laki',
+        'jml_siswa_perempuan',
+        'Gambar',
+        'nama',
+        'total_siswa'
     ];
 }
