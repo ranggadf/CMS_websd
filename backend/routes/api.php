@@ -14,7 +14,7 @@ use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\BeritaController;
 
-use App\Http\Controllers\EkstrakulikulerController;
+
 use App\Http\Controllers\NavbarController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\FasilitasController;
@@ -199,12 +199,6 @@ Route::put('/updateFasilitas/{id}', [FasilitasController::class, 'updateFasilita
 Route::delete('/deleteFasilitas/{id}', [FasilitasController::class, 'deleteFasilitas']); 
 Route::get('/getFasilitasById/{id}', [FasilitasController::class, 'getFasilitasById']);
 
-//ekstrakulikuler
-Route::post('/tambahEkskul', [EkstrakulikulerController::class, 'tambahEkskul']);
-Route::get('/getEkskul', [EkstrakulikulerController::class, 'getEkskul']); 
-Route::put('/updateEkskul/{id}', [EkstrakulikulerController::class, 'updateEkskul']); 
-Route::delete('/deleteEkskul/{id}', [EkstrakulikulerController::class, 'deleteEkskul']); 
-Route::get('/getEkskulbyId/{id}', [EkstrakulikulerController::class, 'getEkskulById']);
 
 //berita
 Route::post('/tambahBerita', [BeritaController::class, 'tambahBerita']);

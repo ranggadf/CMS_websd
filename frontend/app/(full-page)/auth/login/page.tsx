@@ -83,84 +83,13 @@ const LoginPage = () => {
     const containerClassName = classNames('surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden', { 'p-input-filled': layoutConfig.inputStyle === 'filled' });
 
     return (
-        // <div className={containerClassName}>
-        //     <div className="flex flex-column align-items-center justify-content-center">
-        //         {/* <img src={`/demo/images/logo/logo-godong.png`} alt="Sakai logo" className="mb-5 w-10rem flex-shrink-0" /> */}
-        //         <div
-        //             style={{
-        //                 borderRadius: '56px',
-        //                 padding: '0.3rem',
-        //                 background: 'linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%)'
-        //             }}
-        //         >
-        //             <div className="w-full surface-card py-8 px-5 sm:px-8" style={{ borderRadius: '53px' }}>
-        //                 <div className="text-center mb-5 animate__animated animate__fadeIn">
-        //                     <img src="/demo/images/logo/logo-godong.png" alt="Logo Godong" height="80" className="mb-4 transition-transform hover:scale-110" />
-        //                     {/* <p className="text-900 text-2xl font-bold mb-3 text-gradient">Silahkan Login</p> */}
-        //                     {/* <p className="text-600 text-xl font-medium mb-4">Mari mulai perjalanan Anda bersama kami</p> */}
-        //                     {/* <div className="inline-block bg-primary text-white text-lg font-semibold py-2 px-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300">
-        //                         Silakan Login untuk Melanjutkan
-        //                     </div> */}
-        //                 </div>
-        //                 <div>
-        //                     <form onSubmit={handleSubmit}>
-        //                         <label htmlFor="email" className="block text-900 text-xl font-medium mb-2">
-        //                             Email
-        //                         </label>
-        //                         <InputText
-        //                             id="email"
-        //                             name='email'
-        //                             type="email"
-        //                             placeholder="Alamat email"
-        //                             className="w-full md:w-30rem mb-3"
-        //                             style={{ padding: '1rem' }}
-        //                             value={email}
-        //                             onChange={handleEmailChange}
-        //                         />
-
-        //                         <label htmlFor="password" className="block text-900 font-medium text-xl mb-2">
-        //                             Password
-        //                         </label>
-        //                         <Password
-        //                             inputId="password"
-        //                             name='password'
-        //                             placeholder="Password"
-        //                             toggleMask
-        //                             className="w-full mb-2"
-        //                             inputClassName="w-full p-3 md:w-30rem"
-        //                             value={password}
-        //                             onChange={handlePasswordChange}
-        //                             promptLabel="Masukkan kata sandi"
-        //                             weakLabel="Lemah"
-        //                             mediumLabel="Sedang"
-        //                             strongLabel="Kuat"
-        //                         />
-
-        //                         <div className="flex align-items-center justify-content-between mb-5 gap-5">
-        //                             {/* <div className="flex align-items-center">
-        //                             <Checkbox inputId="rememberme1" checked={checked} onChange={(e) => setChecked(e.checked ?? false)} className="mr-2"></Checkbox>
-        //                             <label htmlFor="rememberme1">Remember me</label>
-        //                         </div>
-        //                         <a className="font-medium no-underline ml-2 text-right cursor-pointer" style={{ color: 'var(--primary-color)' }}>
-        //                             Forgot password?
-        //                         </a> */}
-        //                             <Link href={'/auth/signup'} >
-        //                                 <label htmlFor="" className='cursor-pointer'>Belum Punya Akun?</label>
-        //                             </Link>
-        //                         </div>
-        //                         <Button label="Sign In" className="w-full p-3 text-xl"></Button>
-        //                     </form>
-        //                 </div>
-        //             </div>
-        //         </div>
-        //     </div>
-        // </div>
+    
 
         <div className="flex flex-row h-screen">
-            <div className="h-full col-6 flex flex-column justify-content-center align-items-center p-8" style={{ background: 'linear-gradient(to right, #C3DCFC, #E6F2FF,#E6F2FF)' }}>
+            <div className="h-full col-6 flex flex-column justify-content-center align-items-center p-8" style={{ background: 'linear-gradient(to right,  #D32F2F, #F44336,#D32F2F)' }}>
                 <div className="col-11">
                     <h1 className="text-3xl mb-2">Selamat Datang di</h1>
-                    <h2 className="text-5xl font-bold mb-6 w-7">Loan Origination System</h2>
+                    <h2 className="text-5xl font-bold mb-6 w-7">MANAJEMEN KONTEN WEB SDN 01 MANGUHARJO</h2>
 
                     <form onSubmit={handleSubmit} className="mt-8">
                         <div className='mb-4'>
@@ -213,10 +142,21 @@ const LoginPage = () => {
                     <img src="/demo/images/logo/logo-godong.png"  alt="Logo Godong" className="mb-4 transition-transform hover:scale-110" />
                 </div> */}
             </div>
-            <div className="col-6 flex items-center justify-center" style={{ background: 'linear-gradient(to left, #C3DCFC, #E6F2FF)' }}>
+            <div
+  className="col-6 flex items-center justify-center"
+  style={{
+    background: 'linear-gradient(to left, #D32F2F, #F44336,#D32F2F)',
+  }}
+>
+  <img
+    src="/demo/images/login/bg-login.png"
+    alt="Login Illustration"
+    className="max-w-md w-full drop-shadow-2xl transition-transform duration-500 hover:scale-105"
+  />
+</div>
                 <img src="/demo/images/login/bg-login.png" alt="Login Illustration" className="max-w-md w-full" />
             </div>
-        </div>
+      
     );
 
 };
