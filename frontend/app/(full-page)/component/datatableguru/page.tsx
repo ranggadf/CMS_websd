@@ -7,48 +7,48 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { FileUpload, FileUploadSelectEvent } from 'primereact/fileupload';
 import { Toast } from 'primereact/toast';
+import { Dropdown } from 'primereact/dropdown';
 
-interface DataTableWithCRUDProps {
+interface DataTableWithCRUDGuruProps {
     data: any[];
     loading: boolean;
     columns: { field: string; header: string }[];
-    onAdd: (judul: string, deskripsi: string, gambar: File | null) => void;
-    onUpdate: (id: string, judul: string, deskripsi: string, gambar: File | null) => void;
+    onAdd: (kategori: string, nama: string, jabatan: string, gambar: File | null) => void;
+    onUpdate: (id: string, kategori: string, nama: string, jabatan: string, gambar: File | null) => void;
     onDelete: (id: string) => void;
-    nameField: string;
-    nameField2: string;
-    nameField3: string;
-    inputLabel: string;
-    inputLabel2: string;
-    inputLabel3: string;
 }
 
-const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
+const DataTableWithCRUDGuru: React.FC<DataTableWithCRUDGuruProps> = ({
     data,
     loading,
     columns,
     onAdd,
     onUpdate,
     onDelete,
-    nameField,
-    nameField2,
-    nameField3,
-    inputLabel,
-    inputLabel2,
-    inputLabel3
 }) => {
     const [showDialog, setShowDialog] = useState(false);
     const [showEditDialog, setShowEditDialog] = useState(false);
     const [selectedData, setSelectedData] = useState<any>(null);
-    const [judul, setJudul] = useState('');
-    const [deskripsi, setDeskripsi] = useState('');
+
+    const [kategori, setKategori] = useState('');
+    const [nama, setNama] = useState('');
+    const [jabatan, setJabatan] = useState('');
     const [gambar, setGambar] = useState<File | null>(null);
     const toast = useRef<Toast>(null);
 
+    // === Opsi dropdown kategori ===
+    const kategoriOptions = [
+        { label: 'Kepala Sekolah', value: 'Kepala Sekolah' },
+        { label: 'Guru Mapel', value: 'Guru Mapel' },
+        { label: 'Guru Kelas', value: 'Guru Kelas' },
+        { label: 'Karyawan', value: 'Karyawan' },
+    ];
+
     // === Dialog Add ===
     const openAddDialog = () => {
-        setJudul('');
-        setDeskripsi('');
+        setKategori('');
+        setNama('');
+        setJabatan('');
         setGambar(null);
         setShowDialog(true);
     };
@@ -56,59 +56,55 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
     // === Dialog Edit ===
     const openEditDialog = (rowData: any) => {
         setSelectedData(rowData);
-        setJudul(rowData.judul || '');
-        setDeskripsi(rowData.deskripsi || '');
+        setKategori(rowData.kategori || '');
+        setNama(rowData.nama || '');
+        setJabatan(rowData.jabatan || '');
         setGambar(null);
         setShowEditDialog(true);
     };
 
-    // === File Upload Handler ===
+    // === File Upload ===
     const handleFileSelect = (e: FileUploadSelectEvent) => {
         const file = e.files[0];
         setGambar(file);
     };
 
-    // === Add ===
+    // === Add Data ===
     const handleAddData = () => {
-        if (!judul || !deskripsi) {
+        if (!kategori || !nama || !jabatan) {
             toast.current?.show({
                 severity: 'warn',
                 summary: 'Peringatan',
-                detail: 'Judul dan Deskripsi wajib diisi',
-                life: 3000
+                detail: 'Semua field wajib diisi',
+                life: 3000,
             });
             return;
         }
-        onAdd(judul, deskripsi, gambar);
+        onAdd(kategori, nama, jabatan, gambar);
         setShowDialog(false);
     };
 
-    // === Update ===
+    // === Update Data ===
     const handleUpdateData = () => {
         if (!selectedData?.id) return;
-        onUpdate(selectedData.id, judul, deskripsi, gambar);
+        onUpdate(selectedData.id, kategori, nama, jabatan, gambar);
         setShowEditDialog(false);
     };
 
-    // === Delete ===
+    // === Delete Data ===
     const handleDeleteData = (id: string) => {
         if (confirm('Yakin ingin menghapus data ini?')) {
             onDelete(id);
         }
     };
 
-    // === Tampilkan path gambar sebagai teks ===
+    // === Template Gambar ===
     const imageBodyTemplate = (rowData: any) => {
-        // Gunakan G besar sesuai field backend
-        const path = rowData.Gambar || rowData.gambar;
-        return (
-            <span className="text-gray-700">
-                {path ? path : 'Tidak ada gambar'}
-            </span>
-        );
+        const path = rowData.gambar;
+        return <span className="text-gray-700">{path ? path : 'Tidak ada gambar'}</span>;
     };
 
-    // === Tombol aksi ===
+    // === Tombol Aksi ===
     const actionBodyTemplate = (rowData: any) => (
         <div className="flex gap-2">
             <Button
@@ -144,18 +140,12 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
             <Toast ref={toast} />
 
             <div className="card">
-                <div className="flex justify-between align-items-center mb-3">
-                    <h2 className="text-xl font-bold">Daftar Fasilitas</h2>
+                <div className="flex justify-between items-center mb-3">
+                    <h2 className="text-xl font-bold">Daftar Guru</h2>
                     <Button label="Tambah Data" icon="pi pi-plus" onClick={openAddDialog} />
                 </div>
 
-                <DataTable
-                    value={data}
-                    loading={loading}
-                    paginator
-                    rows={10}
-                    responsiveLayout="scroll"
-                >
+                <DataTable value={data} loading={loading} paginator rows={10} responsiveLayout="scroll">
                     {columns.map((col, i) => (
                         <Column
                             key={i}
@@ -170,7 +160,7 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
 
             {/* === Tambah Data === */}
             <Dialog
-                header="Tambah Data"
+                header="Tambah Guru"
                 visible={showDialog}
                 style={{ width: '35rem' }}
                 modal
@@ -178,12 +168,23 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
                 footer={dialogFooter}
             >
                 <div className="field mb-3">
-                    <label htmlFor={nameField}>{inputLabel}</label>
-                    <InputText id={nameField} value={judul} onChange={(e) => setJudul(e.target.value)} className="w-full" />
+                    <label htmlFor="kategori">Kategori</label>
+                    <Dropdown
+                        id="kategori"
+                        value={kategori}
+                        onChange={(e) => setKategori(e.value)}
+                        options={kategoriOptions}
+                        placeholder="Pilih Kategori"
+                        className="w-full"
+                    />
                 </div>
                 <div className="field mb-3">
-                    <label htmlFor={nameField2}>{inputLabel2}</label>
-                    <InputText id={nameField2} value={deskripsi} onChange={(e) => setDeskripsi(e.target.value)} className="w-full" />
+                    <label htmlFor="nama">Nama</label>
+                    <InputText id="nama" value={nama} onChange={(e) => setNama(e.target.value)} className="w-full" />
+                </div>
+                <div className="field mb-3">
+                    <label htmlFor="jabatan">Jabatan</label>
+                    <InputText id="jabatan" value={jabatan} onChange={(e) => setJabatan(e.target.value)} className="w-full" />
                 </div>
                 <fieldset className="p-3 border-round border-1 border-gray-300">
                     <legend className="text-sm font-semibold">Upload Gambar</legend>
@@ -195,18 +196,14 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
                         uploadLabel="Upload"
                         cancelLabel="Batal"
                         onSelect={handleFileSelect}
-                        emptyTemplate={
-                            <p className="m-0 text-sm text-gray-500">
-                                Seret dan lepas file di sini atau klik untuk memilih.
-                            </p>
-                        }
+                        emptyTemplate={<p className="m-0 text-sm text-gray-500">Seret dan lepas file di sini atau klik untuk memilih.</p>}
                     />
                 </fieldset>
             </Dialog>
 
             {/* === Edit Data === */}
             <Dialog
-                header="Edit Data"
+                header="Edit Guru"
                 visible={showEditDialog}
                 style={{ width: '35rem' }}
                 modal
@@ -214,12 +211,23 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
                 footer={editDialogFooter}
             >
                 <div className="field mb-3">
-                    <label htmlFor={nameField}>{inputLabel}</label>
-                    <InputText id={nameField} value={judul} onChange={(e) => setJudul(e.target.value)} className="w-full" />
+                    <label htmlFor="kategori">Kategori</label>
+                    <Dropdown
+                        id="kategori"
+                        value={kategori}
+                        onChange={(e) => setKategori(e.value)}
+                        options={kategoriOptions}
+                        placeholder="Pilih Kategori"
+                        className="w-full"
+                    />
                 </div>
                 <div className="field mb-3">
-                    <label htmlFor={nameField2}>{inputLabel2}</label>
-                    <InputText id={nameField2} value={deskripsi} onChange={(e) => setDeskripsi(e.target.value)} className="w-full" />
+                    <label htmlFor="nama">Nama</label>
+                    <InputText id="nama" value={nama} onChange={(e) => setNama(e.target.value)} className="w-full" />
+                </div>
+                <div className="field mb-3">
+                    <label htmlFor="jabatan">Jabatan</label>
+                    <InputText id="jabatan" value={jabatan} onChange={(e) => setJabatan(e.target.value)} className="w-full" />
                 </div>
                 <fieldset className="p-3 border-round border-1 border-gray-300">
                     <legend className="text-sm font-semibold">Ganti Gambar (opsional)</legend>
@@ -231,11 +239,7 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
                         uploadLabel="Upload"
                         cancelLabel="Batal"
                         onSelect={handleFileSelect}
-                        emptyTemplate={
-                            <p className="m-0 text-sm text-gray-500">
-                                Seret dan lepas file di sini atau klik untuk memilih.
-                            </p>
-                        }
+                        emptyTemplate={<p className="m-0 text-sm text-gray-500">Seret dan lepas file di sini atau klik untuk memilih.</p>}
                     />
                 </fieldset>
             </Dialog>
@@ -243,4 +247,4 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
     );
 };
 
-export default DataTableWithCRUD;
+export default DataTableWithCRUDGuru;

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Ekskul extends Model
 {
     use HasFactory;
-    protected $table = 'ekstrakulikuler';
+    protected $table = 'section_ekstrakulikuler';
     public $timestamps = false;
     protected $fillable = [
         'id',

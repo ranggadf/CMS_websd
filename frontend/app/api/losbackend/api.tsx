@@ -170,5 +170,12 @@ export const API_ENDPOINTS = {
   TAMBAHBerita: `${api_url}/tambahBerita`,
   UPDATEBerita: (id: string) => `${api_url}/updateBerita/${id}`,
   DELETEBerita: (id: string) => `${api_url}/deleteBerita/${id}`,
+
+  // Guru
+GETGuru: `${api_url}/getGuru`,  
+TAMBAHGuru: `${api_url}/tambahGuru`,  
+UPDATEGuru: (id: string) => `${api_url}/updateGuru/${id}`,  
+DELETEGuru: (id: string) => `${api_url}/deleteGuru/${id}`,
+
  
 };
