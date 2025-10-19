@@ -159,12 +159,23 @@ export const API_ENDPOINTS = {
   UPDATEFasilitas: (id: string) => `${api_url}/updateFasilitas/${id}`,
   DELETEFasilitas: (id: string) => `${api_url}/deleteFasilitas/${id}`,
 
-
+  //Ekstrakulikuler
+  GETEkskul: `${api_url}/getEkskul`,
+  TAMBAHEkskul: `${api_url}/tambahEkskul`,
+  UPDATEEkskul: (id: string) => `${api_url}/updateEkskul/${id}`,
+  DELETEEkskul: (id: string) => `${api_url}/deleteEkskul/${id}`,
 
     //Berita
   GETBerita: `${api_url}/getBerita`,  
   TAMBAHBerita: `${api_url}/tambahBerita`,
   UPDATEBerita: (id: string) => `${api_url}/updateBerita/${id}`,
   DELETEBerita: (id: string) => `${api_url}/deleteBerita/${id}`,
+
+  // Guru
+GETGuru: `${api_url}/getGuru`,  
+TAMBAHGuru: `${api_url}/tambahGuru`,  
+UPDATEGuru: (id: string) => `${api_url}/updateGuru/${id}`,  
+DELETEGuru: (id: string) => `${api_url}/deleteGuru/${id}`,
+
  
 };

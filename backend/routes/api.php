@@ -13,6 +13,7 @@ use App\Http\Controllers\SidebarController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\BeritaController;
+use App\Http\Controllers\GuruController;
 
 
 use App\Http\Controllers\NavbarController;
@@ -206,3 +207,10 @@ Route::get('/getBerita', [BeritaController::class, 'getBerita']);
 Route::put('/updateBerita/{id}', [BeritaController::class, 'updateBerita']); 
 Route::delete('/deleteBerita/{id}', [BeritaController::class, 'deleteBerita']); 
 Route::get('/getBeritaById/{id}', [BeritaController::class, 'getBeritaByID']);
+
+// guru
+Route::post('/tambahGuru', [GuruController::class, 'tambahGuru']);
+Route::get('/getGuru', [GuruController::class, 'getGuru']);
+Route::put('/updateGuru/{id}', [GuruController::class, 'updateGuru']);
+Route::delete('/deleteGuru/{id}', [GuruController::class, 'deleteGuru']);
+Route::get('/getGuruById/{id}', [GuruController::class, 'getGuruByID']);
