@@ -6,7 +6,7 @@ interface AppLayoutProps {
 }
 
 export const metadata: Metadata = {
-    title: 'LOS',
+    title: 'SDN 01 Manguharjo',
     description: 'The ultimate collection of design-agnostic, flexible and accessible React UI Components.',
     robots: { index: false, follow: false },
     viewport: { initialScale: 1, width: 'device-width' },
@@ -15,11 +15,11 @@ export const metadata: Metadata = {
         title: 'PrimeReact SAKAI-REACT',
         url: 'https://sakai.primereact.org/',
         description: 'The ultimate collection of design-agnostic, flexible and accessible React UI Components.',
-        images: ['https://www.primefaces.org/static/social/sakai-react.png'],
+        images: ['/demo/images/logo/logosd.png'],
         ttl: 604800
     },
     icons: {
-        icon: '/favicon.ico'
+        icon: '/demo/images/logo/logosd.png'
     }
 };
 
