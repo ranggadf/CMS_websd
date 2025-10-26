@@ -17,7 +17,7 @@ interface User {
     password: string,
     phone: string,
     address: string,
-    status: 3
+    status: number
 }
 const SignupPage = () => {
     const [formData, setFormData] = useState<User>({
@@ -26,7 +26,7 @@ const SignupPage = () => {
         password: '',
         phone: '',
         address: '',
-        status: 3
+        status: 2
     });
 
 
@@ -180,7 +180,7 @@ const SignupPage = () => {
             <div className="h-full col-6 flex flex-column justify-content-center align-items-center p-8" style={{ background: 'linear-gradient(to right, #C3DCFC, #E6F2FF,#E6F2FF)' }}>
                 <div className="col-11">
                     <h1 className="text-3xl mb-2">Selamat Datang di</h1>
-                    <h2 className="text-5xl font-bold mb-5 w-7">Loan Origination System</h2>
+                    <h2 className="text-5xl font-bold mb-5 w-7">CMS web sd manguharjo 1 madiun</h2>
 
                     <form onSubmit={handleSubmit}>
                         <div className='mb-3'>

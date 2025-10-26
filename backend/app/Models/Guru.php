@@ -10,10 +10,11 @@ class Guru extends Model
     use HasFactory;
 
     // Nama tabel di database
-    protected $table = 'gurus';
+    protected $table = 'section_guru';
 
     // Kolom yang bisa diisi (mass assignable)
     protected $fillable = [
+        
         'kategori',
         'nama',
         'jabatan',

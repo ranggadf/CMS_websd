@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Navbar extends Model
 {
     use HasFactory;
-    protected $table = 'menu_navbar';
+    protected $table = 'section_navbar';
     public $timestamps = false;
     protected $fillable = [
         'id',

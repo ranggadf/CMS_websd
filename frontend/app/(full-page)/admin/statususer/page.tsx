@@ -131,9 +131,9 @@ const Statuspage = () => {
     };
 
     const statusOptions = [
-        { label: 'Marketing', value: 3 },
-        { label: 'Approval', value: 2 },
-        { label: 'Administrator', value: 1 }, 
+        { label: 'Visitor', value: 3 },
+        { label: 'Admin', value: 2 },
+        { label: 'SuperAdmin', value: 1 }, 
     ];
     const handleUpdateUser = async (e: any) => {
         e.preventDefault();
@@ -152,7 +152,7 @@ const Statuspage = () => {
                     return { ...sidebar, status: 1 };
                 } else if (selectedRow.status === 2) {
                     // Approval: Tidak ada sidebar
-                    if (['List Pengajuan'].includes(sidebar.label)) {
+                    if (['List Pengajuan', 'CMS Data Berita'].includes(sidebar.label)) {
                         return { ...sidebar, status: 2 };
                     }
                     return { ...sidebar, status: 1 };
@@ -201,7 +201,7 @@ const Statuspage = () => {
                 <Column field="email" header="Email" style={{ width: '20%' }} />
                 <Column field="status" header="Status" body={(rowData) => (
                     <div>
-                        {rowData.status === 1 ? 'Administrator' : rowData.status === 2 ? 'Approval' : 'Marketing'}
+                        {rowData.status === 1 ? 'SuperAdmin' : rowData.status === 2 ? 'Operator' : 'Marketing'}
                     </div>
                 )} />
                 <Column style={{ width: '5%' }} header="Edit" body={(rowData) => (

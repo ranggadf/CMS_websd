@@ -17,7 +17,7 @@ class NavbarController extends Controller
         return DB::transaction(function () use ($request) {
             $navbar = new Navbar;
             
-            DB::table('menu_navbar')->lockForUpdate()->get();
+            DB::table('section_navbar')->lockForUpdate()->get();
 
             $kodeTerakhir = Navbar::max('Kode');
             $nomorBaru = ($kodeTerakhir ?? 0) + 1;

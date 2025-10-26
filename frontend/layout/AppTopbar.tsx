@@ -21,7 +21,7 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
     return (
         <div className="layout-topbar">
             <Link href="/" className="layout-topbar-logo">
-                <img src={`/demo/images/logo/logo-godong.png`} alt="logo" />
+                {/* <img src={`/demo/images/logo/logo-godong.png`} alt="logo" /> */}
                 {/* <span>LOS</span> */}
             </Link>
 

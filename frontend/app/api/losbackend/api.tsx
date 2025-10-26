@@ -177,5 +177,9 @@ TAMBAHGuru: `${api_url}/tambahGuru`,
 UPDATEGuru: (id: string) => `${api_url}/updateGuru/${id}`,  
 DELETEGuru: (id: string) => `${api_url}/deleteGuru/${id}`,
 
- 
+ // Operator
+ GETOperator: `${api_url}/getoperator`,  
+ TAMBAHOperator: `${api_url}/tambahoperator`,  
+ UPDATEOperator: (id: string) => `${api_url}/updateoperator/${id}`,  
+ DELETEOperator: (id: string) => `${api_url}/deleteoperator/${id}`,
 };

@@ -4,7 +4,7 @@ use App\Http\Controllers\AspekFormController;
 use App\Http\Controllers\FinansialController;
 use App\Http\Controllers\JaminanController;
 use App\Http\Controllers\LimaC_Controller;
-use App\Http\Controllers\Pemohon2Controller;
+use App\Http\Controllers\EkstrakulikulerController;
 use App\Http\Controllers\PemohonController;
 use App\Http\Controllers\PengajuanKreditController;
 use App\Http\Controllers\ProdukController;
@@ -200,6 +200,13 @@ Route::put('/updateFasilitas/{id}', [FasilitasController::class, 'updateFasilita
 Route::delete('/deleteFasilitas/{id}', [FasilitasController::class, 'deleteFasilitas']); 
 Route::get('/getFasilitasById/{id}', [FasilitasController::class, 'getFasilitasById']);
 
+//ekstrakulikuler
+Route::post('/tambahEkskul', [EkstrakulikulerController::class, 'tambahEkskul']);
+Route::get('/getEkskul', [EkstrakulikulerController::class, 'getEkskul']); 
+Route::put('/updateEkskul/{id}', [EkstrakulikulerController::class, 'updateEkskul']); 
+Route::delete('/deleteEkskul/{id}', [EkstrakulikulerController::class, 'deleteEkskul']); 
+Route::get('/getEkskulById/{id}', [EkstrakulikulerController::class, 'getEkskulById']);
+
 
 //berita
 Route::post('/tambahBerita', [BeritaController::class, 'tambahBerita']);
@@ -214,3 +221,10 @@ Route::get('/getGuru', [GuruController::class, 'getGuru']);
 Route::put('/updateGuru/{id}', [GuruController::class, 'updateGuru']);
 Route::delete('/deleteGuru/{id}', [GuruController::class, 'deleteGuru']);
 Route::get('/getGuruById/{id}', [GuruController::class, 'getGuruByID']);
+
+use App\Http\Controllers\OperatorController;
+
+Route::get('/getoperator', [OperatorController::class, 'index']);
+Route::post('/tambahoperator', [OperatorController::class, 'store']);
+Route::put('/updateoperator/{id}', [OperatorController::class, 'update']);
+Route::delete('/deleteoperator/{id}', [OperatorController::class, 'destroy']);

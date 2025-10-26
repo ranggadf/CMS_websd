@@ -17,7 +17,7 @@ import { Card } from 'primereact/card';
 interface User {
     email: string,
     password: string,
-    status: 2
+    status: 1
 }
 const LoginPage = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -86,7 +86,7 @@ const LoginPage = () => {
     
 
         <div className="flex flex-row h-screen">
-            <div className="h-full col-6 flex flex-column justify-content-center align-items-center p-8" style={{ background: 'linear-gradient(to right,  #D32F2F, #F44336,#D32F2F)' }}>
+            <div className="h-full col-6 flex flex-column justify-content-center align-items-center p-8" style={{ background: 'linear-gradient(to right,   #C3DCFC,  #C3DCFC, #C3DCFC)' }}>
                 <div className="col-11">
                     <h1 className="text-3xl mb-2">Selamat Datang di</h1>
                     <h2 className="text-5xl font-bold mb-6 w-7">MANAJEMEN KONTEN WEB SDN 01 MANGUHARJO</h2>
@@ -127,7 +127,7 @@ const LoginPage = () => {
                             />
                         </div>
 
-                        <Button label="Masuk" className="border-none w-full p-3 text-xl text-blue-500 transition-all duration-300 ease-in-out hover:bg-blue-200" style={{ backgroundColor: '#C3DCFC' }} />
+                        <Button label="Masuk" className="border-none w-full p-3 text-xl text-blue-500 transition-all duration-300 ease-in-out hover:bg-blue-200" style={{ backgroundColor: '#E6F2FF' }} />
                     </form>
 
                     <div className="mt-4 text-center">
@@ -145,7 +145,7 @@ const LoginPage = () => {
             <div
   className="col-6 flex items-center justify-center"
   style={{
-    background: 'linear-gradient(to left, #D32F2F, #F44336,#D32F2F)',
+    background: 'linear-gradient(to left,  #C3DCFC,  #C3DCFC, #C3DCFC)',
   }}
 >
   <img
