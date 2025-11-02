@@ -182,4 +182,24 @@ DELETEGuru: (id: string) => `${api_url}/deleteGuru/${id}`,
  TAMBAHOperator: `${api_url}/tambahoperator`,  
  UPDATEOperator: (id: string) => `${api_url}/updateoperator/${id}`,  
  DELETEOperator: (id: string) => `${api_url}/deleteoperator/${id}`,
+
+// Profile Sekolah
+ GETProfileSekolah: `${api_url}/getprofilesekolah`,
+  TAMBAHProfileSekolah: `${api_url}/tambahprofilesekolah`,
+  UPDATEProfileSekolah: (id: string) => `${api_url}/updateprofilesekolah/${id}`,
+  DELETEProfileSekolah: (id: string) => `${api_url}/deleteprofilesekolah/${id}`,
+
+  // Visi Misi
+GETVisiMisi: `${api_url}/getvisimisi`,
+TAMBAHVisiMisi: `${api_url}/tambahvisimisi`,
+UPDATEVisiMisi: (id: string) => `${api_url}/updatevisimisi/${id}`,
+DELETEVisiMisi: (id: string) => `${api_url}/deletevisimisi/${id}`,
+
+// Hubungi Kami
+GETHubungiKami: `${api_url}/gethubungikami`,
+TAMBAHHubungiKami: `${api_url}/tambahhubungikami`,
+UPDATEHubungiKami: (id: string) => `${api_url}/updatehubungikami/${id}`,
+DELETEHubungiKami: (id: string) => `${api_url}/deletehubungikami/${id}`,
+
+
 };

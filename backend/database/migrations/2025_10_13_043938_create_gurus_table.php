@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('gurus', function (Blueprint $table) {
+       Schema::create('visimisi', function (Blueprint $table) {
             $table->id();
-            $table->string('kategori');
-            $table->string('nama');
-            $table->string('jabatan');
-            $table->string('gambar')->nullable(); // boleh kosong jika belum upload
-            $table->timestamps(); // otomatis menambahkan created_at & updated_at
+            $table->json('visi')->nullable();
+            $table->json('misi')->nullable();
+            $table->timestamps();
         });
+
     }
 
     /**

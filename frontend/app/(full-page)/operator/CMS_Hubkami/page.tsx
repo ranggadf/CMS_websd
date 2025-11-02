@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { TabView, TabPanel } from 'primereact/tabview';
 import { Toast } from 'primereact/toast';
-import Tambahoperator from './Tambah/page';
+import TambahNavbar from './Hubkami/page';
 
 
 const TambahanAnalisaKredit = () => {
@@ -10,11 +10,11 @@ const TambahanAnalisaKredit = () => {
 
     return (
         <div className="card">
-            <h2 className='text-2xl font-bold mb-4'>Data Admin</h2>
+            <h2 className='text-2xl font-bold mb-4'>CMS Hubungi Kami</h2>
             <TabView activeIndex={1}>
                 <Toast ref={toast} />
-                <TabPanel header="Tambah Admin">
-                    <Tambahoperator/>
+                <TabPanel header="Hubungi kami ">
+                    <TambahNavbar/>
                 </TabPanel>
    
                

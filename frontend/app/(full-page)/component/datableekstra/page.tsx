@@ -145,7 +145,7 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
 
             <div className="card">
                 <div className="flex justify-between align-items-center mb-3">
-                    <h2 className="text-xl font-bold">Daftar Fasilitas</h2>
+                    <h2 className="text-xl font-bold">Daftar Ekstrakulikuler</h2>
                     <Button label="Tambah Data" icon="pi pi-plus" onClick={openAddDialog} />
                 </div>
 

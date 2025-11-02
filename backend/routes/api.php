@@ -228,3 +228,24 @@ Route::get('/getoperator', [OperatorController::class, 'index']);
 Route::post('/tambahoperator', [OperatorController::class, 'store']);
 Route::put('/updateoperator/{id}', [OperatorController::class, 'update']);
 Route::delete('/deleteoperator/{id}', [OperatorController::class, 'destroy']);
+
+use App\Http\Controllers\ProfileSekolahController;
+
+Route::get('/getprofilesekolah', [ProfileSekolahController::class, 'index']);
+Route::post('/tambahprofilesekolah', [ProfileSekolahController::class, 'tambahProfile']);
+Route::put('/updateprofilesekolah/{id}', [ProfileSekolahController::class, 'updateProfile']); // gunakan post + _method PUT
+Route::delete('/deleteprofilesekolah/{id}', [ProfileSekolahController::class, 'deleteProfile']);
+
+use App\Http\Controllers\VisiMisiController;
+
+Route::get('/getvisimisi', [VisiMisiController::class, 'index']);
+Route::post('/tambahvisimisi', [VisiMisiController::class, 'Tambahvisimisi']);
+Route::put('/updatevisimisi/{id}', [VisiMisiController::class, 'updatevisimisi']);
+Route::delete('/deletevisimisi/{id}', [VisiMisiController::class, 'deletevisimisi']);
+
+use App\Http\Controllers\HubungiKamiController;
+
+Route::get('/gethubungikami', [HubungiKamiController::class, 'index']);
+Route::post('/tambahhubungikami', [HubungiKamiController::class, 'tambahhubkami']);
+Route::put('/updatehubungikami/{id}', [HubungiKamiController::class, 'updatehubkami']);
+Route::delete('/deletehubungikami/{id}', [HubungiKamiController::class, 'deletehubkami']);
