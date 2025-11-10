@@ -109,4 +109,52 @@ class GuruController extends Controller
         $guru->delete();
         return response()->json(['message' => 'Guru berhasil dihapus']);
     }
+
+    // ✅ Get semua kategori guru beserta datanya (dengan urutan khusus)
+    public function getGuruByKategoriAll()
+    {
+        $kategoriList = Guru::select('kategori')
+            ->distinct()
+            ->pluck('kategori');
+
+        $data = [];
+
+        foreach ($kategoriList as $kategori) {
+            $query = Guru::where('kategori', $kategori);
+
+            // 🔹 Urutan khusus untuk kategori tertentu
+            if ($kategori === 'Kepala Sekolah') {
+                $query->orderByRaw("
+                    CASE 
+                        WHEN jabatan = 'Kepala Sekolah' THEN 1
+                        WHEN jabatan = 'Wakil Kepala Sekolah' THEN 2
+                        ELSE 3
+                    END
+                ");
+            } elseif ($kategori === 'Guru Kelas') {
+                $query->orderByRaw("
+                    CASE 
+                        WHEN jabatan LIKE '%Kelas 1%' THEN 1
+                        WHEN jabatan LIKE '%Kelas 2%' THEN 2
+                        WHEN jabatan LIKE '%Kelas 3%' THEN 3
+                        WHEN jabatan LIKE '%Kelas 4%' THEN 4
+                        WHEN jabatan LIKE '%Kelas 5%' THEN 5
+                        WHEN jabatan LIKE '%Kelas 6%' THEN 6
+                        ELSE 7
+                    END
+                ");
+            } else {
+                // Guru Mapel & Karyawan → tidak perlu urutan khusus
+                $query->inRandomOrder();
+            }
+
+            $data[] = [
+                'kategori' => $kategori,
+                'gurus' => $query->get(),
+            ];
+        }
+
+        return response()->json($data);
+    }
+
 }

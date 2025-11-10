@@ -221,6 +221,7 @@ Route::get('/getGuru', [GuruController::class, 'getGuru']);
 Route::put('/updateGuru/{id}', [GuruController::class, 'updateGuru']);
 Route::delete('/deleteGuru/{id}', [GuruController::class, 'deleteGuru']);
 Route::get('/getGuruById/{id}', [GuruController::class, 'getGuruByID']);
+Route::get('/getGuruByKategoriAll', [GuruController::class, 'getGuruByKategoriAll']);
 
 use App\Http\Controllers\OperatorController;
 

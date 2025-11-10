@@ -11,7 +11,7 @@ const CMSEkskul = () => {
 
   return (
     <div className="card">
-      <h2 className="text-2xl font-bold mb-4">CMS Halaman Ekstrakulikuler</h2>
+      <h2 className="text-2xl font-bold mb-4">CMS Ekstrakulikuler</h2>
 
       <Toast ref={toast} />
 

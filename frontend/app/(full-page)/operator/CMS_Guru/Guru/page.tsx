@@ -148,8 +148,8 @@ const CMSGuru = () => {
                         { field: 'nama', header: 'Nama Guru' },
                         { field: 'jabatan', header: 'Jabatan' },
                         { field: 'gambar', header: 'Foto' },
-                        { field: 'created_at', header: 'Dibuat Pada' },
-                        { field: 'updated_at', header: 'Diperbarui Pada' },
+                        // { field: 'created_at', header: 'Dibuat Pada' },
+                        // { field: 'updated_at', header: 'Diperbarui Pada' },
                     ]}
                     onAdd={handleAdd}
                     onUpdate={handleUpdate}
