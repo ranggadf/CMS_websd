@@ -41,7 +41,7 @@ const LoginPage = () => {
             document.cookie = `user-info=${JSON.stringify(response.data)}; path=/`;
 
             if (response.data.status === 2 || response.data.status === 3) {
-                router.push('/');
+                router.push('/operator/');
             } else if (response.data.status === 1) {
                 router.push('/admin/');
             } else {

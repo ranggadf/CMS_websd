@@ -221,6 +221,7 @@ Route::get('/getGuru', [GuruController::class, 'getGuru']);
 Route::put('/updateGuru/{id}', [GuruController::class, 'updateGuru']);
 Route::delete('/deleteGuru/{id}', [GuruController::class, 'deleteGuru']);
 Route::get('/getGuruById/{id}', [GuruController::class, 'getGuruByID']);
+Route::get('/gettotalGuru', [GuruController::class, 'gettotalGuru']);
 
 use App\Http\Controllers\OperatorController;
 
@@ -249,3 +250,8 @@ Route::get('/gethubungikami', [HubungiKamiController::class, 'index']);
 Route::post('/tambahhubungikami', [HubungiKamiController::class, 'tambahhubkami']);
 Route::put('/updatehubungikami/{id}', [HubungiKamiController::class, 'updatehubkami']);
 Route::delete('/deletehubungikami/{id}', [HubungiKamiController::class, 'deletehubkami']);
+
+use App\Http\Controllers\VisitorController;
+
+Route::post('/addVisitor', [VisitorController::class, 'store']);
+Route::get('/getTotalVisitor', [VisitorController::class, 'total']);

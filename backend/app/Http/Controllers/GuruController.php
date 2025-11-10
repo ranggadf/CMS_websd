@@ -39,6 +39,14 @@ class GuruController extends Controller
         ], 201);
     }
 
+
+    public function gettotalGuru()
+{
+    $count = Guru::count(); // Menghitung jumlah total data guru
+    return response()->json(['count' => $count]);
+}
+
+
     // ✅ Get Semua Data Guru
     public function getGuru()
     {

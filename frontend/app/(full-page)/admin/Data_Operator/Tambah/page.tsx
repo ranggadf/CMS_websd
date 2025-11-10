@@ -156,7 +156,7 @@ export default function KelolaOperatorPage() {
         <Button
           label="Tambah Admin"
           icon="pi pi-plus"
-          severity="success"
+          severity="info"
           className="px-4 py-2 font-medium shadow-md"
           onClick={() => {
             setSelectedOperator({

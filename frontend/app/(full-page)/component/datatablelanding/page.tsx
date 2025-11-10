@@ -68,6 +68,12 @@ const DataTableWithCRUD = ({
     const [editValue6, setEditValue6] = useState('');
      const [editValue7, setEditValue7] = useState('');
       const [editValue8, setEditValue8] = useState('');
+      // Tambahkan di bagian useState
+const [filterSection, setFilterSection] = useState<string | null>(null);
+const filteredData = filterSection 
+    ? data.filter((item: any) => item.section === filterSection) 
+    : data; // <-- tambahkan data sebagai fallback
+
     
     const [selectedImage, setSelectedImage] = useState<string | null>(null); // untuk preview gambar
     const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null); // untuk upload
@@ -81,6 +87,8 @@ const DataTableWithCRUD = ({
     const [sectionContents, setSectionContents] = useState<{
         [key: string]: { id: number; section: string, judul: string, deskripsi: string, jml_siswa_laki: string, jml_siswa_perempuan: string, nama: string, total_siswa: string }[];
     }>({});
+
+    
 
 
 
@@ -141,35 +149,51 @@ const DataTableWithCRUD = ({
         }));
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const contentList = sectionContents[inputValue];
-        if (!contentList || contentList.length === 0) {
-            toast.current?.show({
-                severity: 'warn',
-                summary: 'Peringatan',
-                detail: 'Belum ada konten yang ditambahkan',
-                life: 3000
-            });
-            return;
-        }
-        console.log("Data sebelum dikirim:", contentList);
+   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const contentList = sectionContents[inputValue];
+    if (!contentList || contentList.length === 0) {
+        toast.current?.show({
+            severity: 'warn',
+            summary: 'Peringatan',
+            detail: 'Belum ada konten yang ditambahkan',
+            life: 3000
+        });
+        return;
+    }
 
-        if (singleInput) {
-            onAdd(inputValue);
-        } else {
-            onAdd(inputValue, inputValue3, inputValue4, contentList);
-        }
-        setInputValue('');
-        setInputValue2('');
-        setInputValue3('');
-        setInputValue4('');
-        setInputValue5('');
-        setInputValue6('');
-        setInputValue7('');
-        setInputValue8('');
-        setVisibleAdd(false);
-    };
+    console.log("Data sebelum dikirim:", contentList);
+
+    if (singleInput) {
+        onAdd(inputValue);
+    } else {
+        onAdd(inputValue, inputValue3, inputValue4, contentList);
+    }
+
+    // Reset input
+    setInputValue('');
+    setInputValue2('');
+    setInputValue3('');
+    setInputValue4('');
+    setInputValue5('');
+    setInputValue6('');
+    setInputValue7('');
+    setInputValue8('');
+    setVisibleAdd(false);
+
+    // Tambahkan toast notifikasi sukses
+   // Tampilkan toast dulu
+toast.current?.show({
+    severity: 'success',
+    summary: 'Berhasil',
+    detail: 'Data berhasil ditambahkan',
+    life: 3000
+});
+
+// Baru tutup dialog
+setVisibleAdd(false);
+
+};
 
     const toast = useRef<Toast>(null);
 
@@ -232,37 +256,61 @@ const DataTableWithCRUD = ({
 
     return (
 
-        <div className='mb-5'>
-            <Toast ref={toast} />
-            <div className='mb-2 flex justify-content-end'>
-                <Button label={addButtonLabel} icon="pi pi-plus" style={{ border: 'none', color: '#333', transition: 'transform 0.3s ease-in-out' }} className='bg-blue-200 w-full sm:w-auto hover:scale-110' onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'} onClick={() => setVisibleAdd(true)} />
-            </div>
-            <DataTable value={data} responsiveLayout="stack" breakpoint="960px" paginator rows={5} rowsPerPageOptions={[5, 10]}>
-                {/* <Column key="Kode" field="Kode" header="Kode" className='w-full sm:w-2' /> */}
-                {columns.map((col: any) => (
-                    <Column key={col.field} field={col.field} header={col.header} className={columns.length === 1 ? 'w-full sm:w-7' : 'w-full sm:w-4'} />
-                ))}
-                <Column header="Perbarui" body={(rowData) => (
-                    <Button icon="pi pi-pencil" style={{ color: '#000000', transition: 'transform 0.3s ease-in-out' }} className='bg-blue-200 border-transparent hover:scale-110' onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'} onClick={() => {
+         <div className='mb-5'>
+        <Toast ref={toast} />
+
+        <div className='mb-3 flex gap-3'>
+            <Dropdown
+                value={filterSection}
+                options={[...Array(4)].map((_, i) => ({ label: `Section ${i+1}`, value: (i+1).toString() }))}
+                onChange={(e) => setFilterSection(e.value)}
+                placeholder="Filter by Section"
+                showClear
+                className="w-48"
+            />
+            <Button label="Reset Filter" icon="pi pi-refresh" onClick={() => setFilterSection(null)} className="p-button-secondary" />
+        </div>
+
+        <div className='mb-2 flex justify-content-end'>
+            <Button 
+                label={addButtonLabel} 
+                icon="pi pi-plus" 
+                style={{ border: 'none', color: '#333', transition: 'transform 0.3s ease-in-out' }} 
+                className='bg-blue-200 w-full sm:w-auto hover:scale-110' 
+                onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'} 
+                onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'} 
+                onClick={() => setVisibleAdd(true)} 
+            />
+        </div>
+
+        {/* Ganti value menjadi filteredData */}
+        <DataTable value={filteredData} responsiveLayout="stack" breakpoint="960px" paginator rows={5} rowsPerPageOptions={[5, 10]}>
+            {columns.map((col: any) => (
+                <Column key={col.field} field={col.field} header={col.header} className={columns.length === 1 ? 'w-full sm:w-7' : 'w-full sm:w-4'} />
+            ))}
+            <Column header="Perbarui" body={(rowData) => (
+                <Button icon="pi pi-pencil" style={{ color: '#000000', transition: 'transform 0.3s ease-in-out' }} className='bg-blue-200 border-transparent hover:scale-110' 
+                    onClick={() => {
                         setSelectedRow(rowData);
                         setEditValue(rowData[nameField]);
-                        //mengambil kode dari row dipilih dan mencari kode yang sesuai dalam data
                         if (Array.isArray(data2) && data2.length > 0 && rowData?.[nameField4]) {
                             const matchedValue = data2.find(item => item.id === rowData?.[nameField4]) || null;
-                            //set nilai awal edit
                             setEditValue4(matchedValue);
                         }
                         setVisibleEdit(true);
-                    }} />
-                )} />
-                <Column header="Hapus" body={(rowData) => (
-                    <Button icon="pi pi-trash" style={{ color: '#000000', transition: 'transform 0.3s ease-in-out' }} className='bg-red-200 border-transparent hover:scale-110' onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'} onClick={() => {
+                    }} 
+                />
+            )} />
+            <Column header="Hapus" body={(rowData) => (
+                <Button icon="pi pi-trash" style={{ color: '#000000', transition: 'transform 0.3s ease-in-out' }} className='bg-red-200 border-transparent hover:scale-110' 
+                    onClick={() => {
                         setSelectedRow(rowData);
                         setVisibleDelete(true);
-                        console.log(rowData);
-                    }} />
-                )} />
-            </DataTable>
+                    }} 
+                />
+            )} />
+        </DataTable>
+
             <Dialog header={`${deleteDialogHeader} ${selectedRow?.[nameField]}`} visible={visibleDelete} style={{ width: '90vw', maxWidth: '500px' }} onHide={() => setVisibleDelete(false)}>
                 <label htmlFor="">Apakah anda yakin ingin menghapus data ini?</label>
                 <div className='flex flex-column sm:flex-row justify-content-end mt-3'>
@@ -519,6 +567,25 @@ const DataTableWithCRUD = ({
                             id="editValue5"
                             value={editValue5}
                             onChange={(e) => setEditValue5(e.target.value)}
+                            className="w-full"
+                        />
+                    </div>
+                    <div className="field">
+                        <label htmlFor="editValue5" className='font-bold'>{inputLabel7}</label>
+                        <InputText
+                            id="editValue5"
+                            value={editValue7}
+                            onChange={(e) => setEditValue7(e.target.value)}
+                            className="w-full"
+                        />
+                    </div>
+
+                    <div className="field">
+                        <label htmlFor="editValue8" className='font-bold'>{inputLabel8}</label>
+                        <InputText
+                            id="editValue8"
+                            value={editValue8}
+                            onChange={(e) => setEditValue8(e.target.value)}
                             className="w-full"
                         />
                     </div>

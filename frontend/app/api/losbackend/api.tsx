@@ -176,6 +176,7 @@ GETGuru: `${api_url}/getGuru`,
 TAMBAHGuru: `${api_url}/tambahGuru`,  
 UPDATEGuru: (id: string) => `${api_url}/updateGuru/${id}`,  
 DELETEGuru: (id: string) => `${api_url}/deleteGuru/${id}`,
+GETTotalGuru: `${api_url}/gettotalGuru`,
 
  // Operator
  GETOperator: `${api_url}/getoperator`,  
@@ -200,6 +201,9 @@ GETHubungiKami: `${api_url}/gethubungikami`,
 TAMBAHHubungiKami: `${api_url}/tambahhubungikami`,
 UPDATEHubungiKami: (id: string) => `${api_url}/updatehubungikami/${id}`,
 DELETEHubungiKami: (id: string) => `${api_url}/deletehubungikami/${id}`,
+
+// Visitor
+GETVisitor: `${api_url}/getTotalVisitor`,
 
 
 };
