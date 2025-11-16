@@ -141,7 +141,7 @@ const AppMenu = () => {
         {
           label: "Data Admin",
           icon: "pi pi-user",
-          to: "/admin/KelolaAdmin/Dataadmin",
+          to: "/admin/Data_Operator",
         },
       ],
     },
@@ -192,7 +192,7 @@ const AppMenu = () => {
             {
               label: "Berita",
               icon: "pi pi-megaphone",
-              to: "/operator/CMS_Berita",
+              to: "/operator/CMS_berita",
             },
           ],
         },

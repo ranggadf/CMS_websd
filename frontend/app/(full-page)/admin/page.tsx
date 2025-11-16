@@ -34,44 +34,55 @@ const DashboardAdmin = () => {
   });
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [
-          guruRes,
-          siswaRes,
-          fasilitasRes,
-          ekskulRes,
-          beritaRes,
-          visitorRes,
-        ] = await Promise.all([
-          axios.get(API_ENDPOINTS.GETGuru),
-          axios.get(API_ENDPOINTS.GETSECTIONLanding),
-          axios.get(API_ENDPOINTS.GETFasilitas),
-          axios.get(API_ENDPOINTS.GETEkskul),
-          axios.get(API_ENDPOINTS.GETBerita),
-          axios.get(API_ENDPOINTS.GETVisitor),
-        ]);
+  const fetchData = async () => {
+    try {
+      const [
+        guruRes,
+        siswaRes,
+        fasilitasRes,
+        ekskulRes,
+        beritaRes,
+        visitorRes,
+      ] = await Promise.all([
+        axios.get(API_ENDPOINTS.GETGuru),
+        axios.get(API_ENDPOINTS.GETSECTIONLanding),
+        axios.get(API_ENDPOINTS.GETFasilitas),
+        axios.get(API_ENDPOINTS.GETEkskul),
+        axios.get(API_ENDPOINTS.GETBerita),
+        axios.get(API_ENDPOINTS.GETVisitor), // ✅ ambil dari endpoint getTotalVisitor
+      ]);
 
-        const siswaSection = siswaRes.data.find(
-          (item: any) => item.section === "3" && item.total_siswa !== null
-        );
-        const totalSiswa = siswaSection ? siswaSection.total_siswa : 0;
+      // Ambil total siswa dari section "3"
+      const siswaSection = siswaRes.data.find(
+        (item: any) => item.section === "3" && item.total_siswa !== null
+      );
+      const totalSiswa = siswaSection ? siswaSection.total_siswa : 0;
 
-        setData({
-          guru: guruRes.data.length || 0,
-          siswa: totalSiswa,
-          fasilitas: fasilitasRes.data.length || 0,
-          ekstrakurikuler: ekskulRes.data.length || 0,
-          berita: beritaRes.data.length || 0,
-          visitor: visitorRes.data.length || 0,
-        });
-      } catch (err) {
-        console.error("❌ Gagal mengambil data dashboard:", err);
-      }
-    };
+      // Deteksi struktur data visitor
+      let totalVisitor = 0;
+      if (Array.isArray(visitorRes.data)) {
+        totalVisitor = visitorRes.data.length;
+      } else if (typeof visitorRes.data === "object" && visitorRes.data.total_visitors) {
+  totalVisitor = visitorRes.data.total_visitors;
+}
 
-    fetchData();
-  }, []);
+
+      setData({
+        guru: guruRes.data.length || 0,
+        siswa: totalSiswa,
+        fasilitas: fasilitasRes.data.length || 0,
+        ekstrakurikuler: ekskulRes.data.length || 0,
+        berita: beritaRes.data.length || 0,
+        visitor: totalVisitor,
+      });
+    } catch (err) {
+      console.error("❌ Gagal mengambil data dashboard:", err);
+    }
+  };
+
+  fetchData();
+}, []);
+
 
   const chartData = [
     { name: "Guru", value: data.guru },

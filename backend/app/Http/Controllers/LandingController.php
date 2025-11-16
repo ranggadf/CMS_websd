@@ -2,153 +2,78 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\SectionLanding;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\File;
+use App\Models\SectionLanding;
+use Illuminate\Support\Facades\Storage;
 
 class LandingController extends Controller
 {
-    public function tambahLanding(Request $request)
-    {
-        Log::info('Data yang diterima:', $request->all());
-
-        return DB::transaction(function () use ($request) {
-            $savedData = [];
-
-            foreach ($request->input('sections') as $index => $sectionData) {
-                // Validasi field
-                $validator = Validator::make($sectionData, [
-                    'section'    => 'required|string',
-                    'judul'      => 'nullable|string',
-                    'deskripsi'  => 'nullable|string',
-                    'jml_siswa_laki' => 'nullable|string',
-                    'jml_siswa_perempuan'    => 'nullable|string',
-                    'nama'    => 'nullable|string',
-                    'total_siswa'    => 'nullable|string',
-                ]);
-
-                if ($validator->fails()) {
-                    return response()->json(['errors' => $validator->errors()], 422);
-                }
-
-                $data = new SectionLanding;
-                $data->section    = $sectionData['section'];
-                $data->judul      = $sectionData['judul']?? null;
-                $data->deskripsi  = $sectionData['deskripsi'?? null];
-                $data->jml_siswa_laki = $sectionData['jml_siswa_laki'] ?? null;
-                $data->jml_siswa_perempuan    = $sectionData['jml_siswa_perempuan'] ?? null;
-                $data->nama    = $sectionData['nama'] ?? null;
-                $data->total_siswa    = $sectionData['total_siswa'] ?? null;
-
-                // Proses upload gambar
-                if ($request->hasFile("sections.$index.Gambar")) {
-                    $file = $request->file("sections.$index.Gambar");
-
-                    // Validasi gambar
-                    $validator = Validator::make(
-                        ['image' => $file],
-                        ['image' => 'image|mimes:jpg,jpeg,png,gif|max:2048']
-                    );
-
-                    if ($validator->fails()) {
-                        return response()->json(['errors' => $validator->errors()], 422);
-                    }
-
-                    // Simpan gambar
-                    $filename = time() . '_' . $file->getClientOriginalName();
-                    $file->move(public_path('images'), $filename);
-
-                    // Simpan path ke kolom "Gambar"
-                    $data->Gambar = 'images/' . $filename;
-                }
-
-                $data->save();
-                $savedData[] = $data;
-            }
-
-            return response()->json([
-                'message' => 'Berhasil simpan semua section FAQ',
-                'data'    => $savedData
-            ]);
-        });
-    }
-
     public function getLanding()
     {
-        return response()->json(SectionLanding::all());
+        return response()->json(SectionLanding::orderBy('id', 'asc')->get());
     }
 
-    public function getLandingById($id)
+    public function tambahLanding(Request $request)
     {
-        $data = SectionLanding::find($id);
+        $request->validate([
+            'section' => 'required|string',
+            'judul' => 'required|string',
+            'deskripsi' => 'required|string',
+            'Gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
 
-        if (!$data) {
-            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        $gambarPath = null;
+        if ($request->hasFile('Gambar')) {
+            $gambarPath = $request->file('Gambar')->store('landing', 'public');
         }
 
-        return response()->json($data);
+        $data = SectionLanding::create([
+            'section' => $request->section,
+            'judul' => $request->judul,
+            'deskripsi' => $request->deskripsi,
+            'nama' => $request->nama,
+            'jml_siswa_laki' => $request->jml_siswa_laki,
+            'jml_siswa_perempuan' => $request->jml_siswa_perempuan,
+            'total_siswa' => $request->total_siswa,
+            'Gambar' => $gambarPath, // <-- gunakan huruf besar di sini juga
+        ]);
+
+        return response()->json($data, 201);
     }
 
-    public function updateLanding(Request $request, string $id)
-{
-    try {
-        Log::info('Masuk ke updateSectionFaq');
-        Log::info('Request all:', $request->all());
-        Log::info('File Gambar:', [$request->file('Gambar')]);
-
+    public function updateLanding(Request $request, $id)
+    {
         $data = SectionLanding::findOrFail($id);
 
-        // Upload Gambar jika ada
-        if ($request->hasFile('Gambar') && $request->file('Gambar')->isValid()) {
-            // Hapus gambar lama jika ada
-            if ($data->Gambar && File::exists(public_path($data->Gambar))) {
-                File::delete(public_path($data->Gambar));
+        if ($request->hasFile('Gambar')) {
+            if ($data->Gambar && Storage::disk('public')->exists($data->Gambar)) {
+                Storage::disk('public')->delete($data->Gambar);
             }
-
-            // Simpan gambar baru
-            $file = $request->file('Gambar');
-            $namaFile = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('/images'), $namaFile);
-            $data->Gambar = '/images' . $namaFile;
+            $data->Gambar = $request->file('Gambar')->store('landing', 'public');
         }
 
-        // Update field-field lainnya
-        $fields = ['section', 'judul', 'deskripsi', 'jml_siswa_laki', 'jml_siswa_perempuan', 'nama', 'total_siswa'];
-        foreach ($fields as $field) {
-            if ($request->filled($field)) {
-                $data->$field = $request->input($field);
-            }
-        }
+        $data->update([
+            'section' => $request->section ?? $data->section,
+            'judul' => $request->judul ?? $data->judul,
+            'deskripsi' => $request->deskripsi ?? $data->deskripsi,
+            'nama' => $request->nama ?? $data->nama,
+            'jml_siswa_laki' => $request->jml_siswa_laki ?? $data->jml_siswa_laki,
+            'jml_siswa_perempuan' => $request->jml_siswa_perempuan ?? $data->jml_siswa_perempuan,
+            'total_siswa' => $request->total_siswa ?? $data->total_siswa,
+            'Gambar' => $data->Gambar,
+        ]);
 
-        $data->save();
-
-        return response()->json($data, 200);
-    } catch (\Exception $e) {
-        Log::error('Update SectionFaq Error:', ['message' => $e->getMessage()]);
-        return response()->json(['error' => 'Gagal update: ' . $e->getMessage()], 500);
+        return response()->json(['message' => 'Berhasil diperbarui', 'data' => $data]);
     }
-}
 
     public function deleteLanding($id)
     {
-        $data = SectionLanding::find($id);
-
-        if (!$data) {
-            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        $data = SectionLanding::findOrFail($id);
+        if ($data->Gambar && Storage::disk('public')->exists($data->Gambar)) {
+            Storage::disk('public')->delete($data->Gambar);
         }
-
-        // Hapus gambar jika ada
-        if ($data->Gambar) {
-            $gambarPath = public_path($data->Gambar);
-            if (file_exists($gambarPath)) {
-                unlink($gambarPath);
-            }
-        }
-
         $data->delete();
-        return response()->json(['message' => 'Data berhasil dihapus']);
+
+        return response()->json(['message' => 'Berhasil dihapus']);
     }
 }

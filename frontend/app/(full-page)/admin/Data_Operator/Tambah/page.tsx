@@ -180,21 +180,22 @@ export default function KelolaOperatorPage() {
         </div>
       ) : (
         <DataTable
-          value={operators}
-          paginator
-          rows={10}
-          className="shadow-md rounded-lg"
-          stripedRows
-          responsiveLayout="scroll"
-        >
-          <Column field="id" header="ID" sortable style={{ width: '5%' }} />
-          <Column field="name" header="Nama" sortable style={{ width: '20%' }} />
-          <Column field="email" header="Email" sortable style={{ width: '25%' }} />
-          <Column field="password" header="Password (Hash)" style={{ width: '25%' }} />
-          <Column field="phone" header="Telepon" style={{ width: '15%' }} />
-          <Column field="address" header="Alamat" style={{ width: '20%' }} />
-          <Column header="Aksi" body={actionTemplate} style={{ width: '15%' }} />
-        </DataTable>
+  value={operators}
+  paginator
+  rows={10}
+  className="shadow-md rounded-lg"
+  stripedRows
+  responsiveLayout="scroll"
+>
+  {/* <Column field="id" header="ID" style={{ width: '5%' }} /> */}
+  <Column field="name" header="Nama" style={{ width: '20%' }} />
+  <Column field="email" header="Email" style={{ width: '25%' }} />
+  <Column field="password" header="Password (Hash)" style={{ width: '25%' }} />
+  <Column field="phone" header="Telepon" style={{ width: '15%' }} />
+  <Column field="address" header="Alamat" style={{ width: '20%' }} />
+  <Column header="Aksi" body={actionTemplate} style={{ width: '15%' }} />
+</DataTable>
+
       )}
 
       {/* DIALOG TAMBAH/EDIT */}

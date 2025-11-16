@@ -124,19 +124,21 @@ export default function DataTableHubungiKami({
 
       <div className="card">
         <div className="flex justify-end mb-3">
-  <Button
-    label="Tambah Data"
-    icon="pi pi-plus"
-    className="p-button-primary"
-    onClick={openAddDialog}
-  />
-</div>
-
+          <Button
+            label="Tambah Data"
+            icon="pi pi-plus"
+            className="p-button-primary"
+            onClick={openAddDialog}
+          />
+        </div>
 
         <DataTable value={data} loading={loading} paginator rows={10} responsiveLayout="scroll">
-          {columns.map((col: any, i: number) => (
-            <Column key={i} field={col.field} header={col.header} sortable />
-          ))}
+          {/* Sembunyikan kolom 'id' dan hilangkan panah sort */}
+          {columns
+            .filter((col: any) => col.field !== 'id') // kolom id tidak ditampilkan
+            .map((col: any, i: number) => (
+              <Column key={i} field={col.field} header={col.header} sortable={false} />
+            ))}
           <Column header="Aksi" body={actionBodyTemplate} />
         </DataTable>
       </div>

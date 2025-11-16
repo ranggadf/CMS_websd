@@ -143,7 +143,6 @@ const DataTableVisiMisi: React.FC<DataTableVisiMisiProps> = ({
             <Toast ref={toast} />
             <div className="card">
                 <div className="flex justify-between align-items-center mb-3">
-                   
                     <Button label="Tambah Data" icon="pi pi-plus" onClick={openAddDialog} />
                 </div>
 
@@ -154,9 +153,12 @@ const DataTableVisiMisi: React.FC<DataTableVisiMisiProps> = ({
                     rows={10}
                     responsiveLayout="scroll"
                 >
-                    {columns.map((col, i) => (
-                        <Column key={i} field={col.field} header={col.header} />
-                    ))}
+                    {/* Sembunyikan kolom id dan hilangkan panah sort */}
+                    {columns
+                        .filter(col => col.field !== 'id')
+                        .map((col, i) => (
+                            <Column key={i} field={col.field} header={col.header} sortable={false} />
+                        ))}
                     <Column header="Aksi" body={actionBodyTemplate} />
                 </DataTable>
             </div>
