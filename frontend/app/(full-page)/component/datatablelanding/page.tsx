@@ -253,17 +253,20 @@ const imageBodyTemplate = (rowData: any) => {
           </>
         )}
 
-        <fieldset className="p-3 border-round border-1 border-gray-300">
-          <legend className="text-sm font-semibold">Upload Gambar</legend>
-          <FileUpload
-            mode="advanced"
-            accept="image/*"
-            customUpload
-            chooseLabel="Pilih File"
-            onSelect={handleFileSelect}
-            emptyTemplate={<p className="m-0 text-sm text-gray-500">Seret atau klik untuk memilih gambar.</p>}
-          />
-        </fieldset>
+        {section !== '3' && (
+  <fieldset className="p-3 border-round border-1 border-gray-300">
+    <legend className="text-sm font-semibold">Upload Gambar</legend>
+    <FileUpload
+      mode="advanced"
+      accept="image/*"
+      customUpload
+      chooseLabel="Pilih File"
+      onSelect={handleFileSelect}
+      emptyTemplate={<p className="m-0 text-sm text-gray-500">Seret atau klik untuk memilih gambar.</p>}
+    />
+  </fieldset>
+)}
+
 
         <div className="flex justify-end gap-2 mt-4">
           <Button label="Batal" icon="pi pi-times" onClick={() => { setShowDialog(false); setShowEditDialog(false); }} className="p-button-text" />
