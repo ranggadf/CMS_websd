@@ -44,6 +44,7 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
     const [deskripsi, setDeskripsi] = useState('');
     const [gambar, setGambar] = useState<File | null>(null);
     const toast = useRef<Toast>(null);
+    const [uploadStatus, setUploadStatus] = useState<string | null>(null);
 
     // === Dialog Add ===
     const openAddDialog = () => {
@@ -51,6 +52,17 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
         setDeskripsi('');
         setGambar(null);
         setShowDialog(true);
+           setUploadStatus(null); // 🟢 Tambahkan ini
+    };
+     const handleUpload = () => {
+        setUploadStatus("success");
+
+        toast.current?.show({
+            severity: "success",
+            summary: "Berhasil Upload",
+            detail: "Gambar berhasil diunggah.",
+            life: 2500,
+        });
     };
 
     // === Dialog Edit ===
@@ -60,6 +72,7 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
         setDeskripsi(rowData.deskripsi || '');
         setGambar(null);
         setShowEditDialog(true);
+           setUploadStatus(null); // 🟢 Tambahkan ini
     };
 
     // === File Upload Handler ===
@@ -145,7 +158,7 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
 
             <div className="card">
                 <div className="flex justify-between align-items-center mb-3">
-                    <h2 className="text-xl font-bold">Daftar Ekstrakulikuler</h2>
+                    <h2 className="text-xl font-bold"></h2>
                     <Button label="Tambah Data" icon="pi pi-plus" onClick={openAddDialog} />
                 </div>
 
@@ -187,20 +200,27 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
                 </div>
                 <fieldset className="p-3 border-round border-1 border-gray-300">
                     <legend className="text-sm font-semibold">Upload Gambar</legend>
-                    <FileUpload
-                        mode="advanced"
-                        accept="image/*"
-                        customUpload
-                        chooseLabel="Pilih File"
-                        uploadLabel="Upload"
-                        cancelLabel="Batal"
-                        onSelect={handleFileSelect}
-                        emptyTemplate={
-                            <p className="m-0 text-sm text-gray-500">
-                                Seret dan lepas file di sini atau klik untuk memilih.
-                            </p>
-                        }
-                    />
+                   <FileUpload
+                                           mode="advanced"
+                                           accept="image/*"
+                                           customUpload
+                                           chooseLabel="Pilih File"
+                                           uploadLabel="Upload"
+                                           cancelLabel="Batal"
+                                           onSelect={handleFileSelect}
+                                           uploadHandler={handleUpload}
+                                           emptyTemplate={<p className="m-0 text-sm text-gray-500">Seret file ke sini atau klik untuk memilih.</p>}
+                                           itemTemplate={(file: any) => {
+                                               const objectURL = file?.objectURL ?? URL.createObjectURL(file);
+                   
+                                               return (
+                                                   <div className="p-fileupload-row flex items-center gap-3 py-2">
+                                                       <img src={objectURL} alt={file.name} className="w-5 h-5 object-cover rounded border" />
+                                                       <span className="text-sm">{file.name}</span>
+                                                   </div>
+                                               );
+                                           }}
+                                       />
                 </fieldset>
             </Dialog>
 
@@ -224,19 +244,26 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
                 <fieldset className="p-3 border-round border-1 border-gray-300">
                     <legend className="text-sm font-semibold">Ganti Gambar (opsional)</legend>
                     <FileUpload
-                        mode="advanced"
-                        accept="image/*"
-                        customUpload
-                        chooseLabel="Pilih File"
-                        uploadLabel="Upload"
-                        cancelLabel="Batal"
-                        onSelect={handleFileSelect}
-                        emptyTemplate={
-                            <p className="m-0 text-sm text-gray-500">
-                                Seret dan lepas file di sini atau klik untuk memilih.
-                            </p>
-                        }
-                    />
+                                           mode="advanced"
+                                           accept="image/*"
+                                           customUpload
+                                           chooseLabel="Pilih File"
+                                           uploadLabel="Upload"
+                                           cancelLabel="Batal"
+                                           onSelect={handleFileSelect}
+                                           uploadHandler={handleUpload}
+                                           emptyTemplate={<p className="m-0 text-sm text-gray-500">Seret file ke sini atau klik untuk memilih.</p>}
+                                           itemTemplate={(file: any) => {
+                                               const objectURL = file?.objectURL ?? URL.createObjectURL(file);
+                   
+                                               return (
+                                                   <div className="p-fileupload-row flex items-center gap-3 py-2">
+                                                       <img src={objectURL} alt={file.name} className="w-5 h-5 object-cover rounded border" />
+                                                       <span className="text-sm">{file.name}</span>
+                                                   </div>
+                                               );
+                                           }}
+                                       />
                 </fieldset>
             </Dialog>
         </>

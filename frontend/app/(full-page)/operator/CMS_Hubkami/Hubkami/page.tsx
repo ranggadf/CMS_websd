@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { Toast } from 'primereact/toast';
-import DataTableHubungiKami from '@/app/(full-page)/component/datatablehubkami/page';
+import DataTableHubungiKami from '@/app/(full-page)/component/datatablehubkami/datablehubkami';
 import { API_ENDPOINTS } from '@/app/api/losbackend/api';
 
 export default function CMSHubungiKami() {

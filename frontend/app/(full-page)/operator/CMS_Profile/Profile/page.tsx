@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { Toast } from 'primereact/toast';
 import { ProgressSpinner } from 'primereact/progressspinner';
-import DataTableWithCRUD from '@/app/(full-page)/component/datatableprofile/page';
+import DataTableWithCRUD from '@/app/(full-page)/component/datatableprofile/datableprofile';
 import { API_ENDPOINTS } from '@/app/api/losbackend/api';
 
 const CMSProfileSekolah = () => {

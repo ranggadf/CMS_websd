@@ -10,7 +10,7 @@ const TambahanAnalisaKredit = () => {
 
     return (
         <div className="card">
-            <h2 className='text-2xl font-bold mb-4'>CMS Landing Page</h2>
+            <h2 className='text-2xl font-bold mb-4'>CMS Halaman Fasilitas</h2>
             <TabView activeIndex={1}>
                 <Toast ref={toast} />
                 <TabPanel header="Tambah Fasilitas">

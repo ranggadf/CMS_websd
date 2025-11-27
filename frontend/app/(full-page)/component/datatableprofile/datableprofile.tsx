@@ -67,6 +67,7 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
     const [email, setEmail] = useState('');
     const [alamat, setAlamat] = useState('');
     const [noTelp, setNoTelp] = useState('');
+    const [uploadStatus, setUploadStatus] = useState<string | null>(null);
 
     const [filterSection, setFilterSection] = useState<string>(''); // 🔹 filter dropdown
 
@@ -90,6 +91,16 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
     const handleFileSelect = (e: FileUploadSelectEvent) => {
         const file = e.files[0];
         setGambar(file);
+    };
+     const handleUpload = () => {
+        setUploadStatus("success");
+
+        toast.current?.show({
+            severity: "success",
+            summary: "Berhasil Upload",
+            detail: "Gambar berhasil diunggah.",
+            life: 2500,
+        });
     };
 
     // === Tambah ===
@@ -254,15 +265,27 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
 
                 <fieldset className="p-3 border-round border-1 border-gray-300">
                     <legend className="text-sm font-semibold">Upload Gambar</legend>
-                    <FileUpload
-                        mode="advanced"
-                        accept="image/*"
-                        customUpload
-                        chooseLabel="Pilih File"
-                        cancelLabel="Batal"
-                        onSelect={handleFileSelect}
-                        emptyTemplate={<p className="m-0 text-sm text-gray-500">Seret dan lepas file di sini atau klik untuk memilih.</p>}
-                    />
+                   <FileUpload
+                                              mode="advanced"
+                                              accept="image/*"
+                                              customUpload
+                                              chooseLabel="Pilih File"
+                                              uploadLabel="Upload"
+                                              cancelLabel="Batal"
+                                              onSelect={handleFileSelect}
+                                              uploadHandler={handleUpload}
+                                              emptyTemplate={<p className="m-0 text-sm text-gray-500">Seret file ke sini atau klik untuk memilih.</p>}
+                                              itemTemplate={(file: any) => {
+                                                  const objectURL = file?.objectURL ?? URL.createObjectURL(file);
+                      
+                                                  return (
+                                                      <div className="p-fileupload-row flex items-center gap-3 py-2">
+                                                          <img src={objectURL} alt={file.name} className="w-5 h-5 object-cover rounded border" />
+                                                          <span className="text-sm">{file.name}</span>
+                                                      </div>
+                                                  );
+                                              }}
+                                          />
                 </fieldset>
             </Dialog>
 
@@ -302,15 +325,27 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
 
                 <fieldset className="p-3 border-round border-1 border-gray-300">
                     <legend className="text-sm font-semibold">Ganti Gambar (opsional)</legend>
-                    <FileUpload
-                        mode="advanced"
-                        accept="image/*"
-                        customUpload
-                        chooseLabel="Pilih File"
-                        cancelLabel="Batal"
-                        onSelect={handleFileSelect}
-                        emptyTemplate={<p className="m-0 text-sm text-gray-500">Seret dan lepas file di sini atau klik untuk memilih.</p>}
-                    />
+                  <FileUpload
+                                             mode="advanced"
+                                             accept="image/*"
+                                             customUpload
+                                             chooseLabel="Pilih File"
+                                             uploadLabel="Upload"
+                                             cancelLabel="Batal"
+                                             onSelect={handleFileSelect}
+                                             uploadHandler={handleUpload}
+                                             emptyTemplate={<p className="m-0 text-sm text-gray-500">Seret file ke sini atau klik untuk memilih.</p>}
+                                             itemTemplate={(file: any) => {
+                                                 const objectURL = file?.objectURL ?? URL.createObjectURL(file);
+                     
+                                                 return (
+                                                     <div className="p-fileupload-row flex items-center gap-3 py-2">
+                                                         <img src={objectURL} alt={file.name} className="w-5 h-5 object-cover rounded border" />
+                                                         <span className="text-sm">{file.name}</span>
+                                                     </div>
+                                                 );
+                                             }}
+                                         />
                 </fieldset>
             </Dialog>
         </>

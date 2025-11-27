@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Toast } from 'primereact/toast';
 import axios from 'axios';
 import { API_ENDPOINTS } from '@/app/api/losbackend/api';
-import DataTableWithCRUD from '@/app/(full-page)/component/datableberita/page';
+import DataTableWithCRUD from '@/app/(full-page)/component/datableberita/datableberita';
 import { ProgressSpinner } from 'primereact/progressspinner';
 
 const CMSBerita = () => {

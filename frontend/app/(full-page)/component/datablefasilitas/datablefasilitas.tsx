@@ -44,23 +44,29 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
     const [deskripsi, setDeskripsi] = useState('');
     const [gambar, setGambar] = useState<File | null>(null);
     const toast = useRef<Toast>(null);
+    const [uploadStatus, setUploadStatus] = useState<string | null>(null);
+
 
     // === Dialog Add ===
-    const openAddDialog = () => {
-        setJudul('');
-        setDeskripsi('');
-        setGambar(null);
-        setShowDialog(true);
-    };
+  const openAddDialog = () => {
+    setJudul('');
+    setDeskripsi('');
+    setGambar(null);
+    setUploadStatus(null); // 🟢 Tambahkan ini
+    setShowDialog(true);
+};
+
 
     // === Dialog Edit ===
-    const openEditDialog = (rowData: any) => {
-        setSelectedData(rowData);
-        setJudul(rowData.judul || '');
-        setDeskripsi(rowData.deskripsi || '');
-        setGambar(null);
-        setShowEditDialog(true);
-    };
+ const openEditDialog = (rowData: any) => {
+    setSelectedData(rowData);
+    setJudul(rowData.judul || '');
+    setDeskripsi(rowData.deskripsi || '');
+    setGambar(null);
+    setUploadStatus(null); // 🟢 Tambahkan ini
+    setShowEditDialog(true);
+};
+
 
     // === File Upload Handler ===
     const handleFileSelect = (e: FileUploadSelectEvent) => {
@@ -145,7 +151,7 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
 
             <div className="card">
                 <div className="flex justify-between align-items-center mb-3">
-                    <h2 className="text-xl font-bold"></h2>
+                  
                     <Button label="Tambah Data" icon="pi pi-plus" onClick={openAddDialog} />
                 </div>
 
@@ -187,20 +193,53 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
                 </div>
                 <fieldset className="p-3 border-round border-1 border-gray-300">
                     <legend className="text-sm font-semibold">Upload Gambar</legend>
-                    <FileUpload
-                        mode="advanced"
-                        accept="image/*"
-                        customUpload
-                        chooseLabel="Pilih File"
-                        uploadLabel="Upload"
-                        cancelLabel="Batal"
-                        onSelect={handleFileSelect}
-                        emptyTemplate={
-                            <p className="m-0 text-sm text-gray-500">
-                                Seret dan lepas file di sini atau klik untuk memilih.
-                            </p>
-                        }
-                    />
+<FileUpload
+    mode="advanced"
+    accept="image/*"
+    customUpload
+    uploadHandler={() => setUploadStatus("success")}
+    chooseLabel="Pilih File"
+    uploadLabel="Upload"
+    cancelLabel="Batal"
+    onSelect={(e) => {
+        handleFileSelect(e);
+        setUploadStatus("selected");
+    }}
+    /* 🔥 Hilangkan 'pending' + fix TypeScript */
+  itemTemplate={(file: any) => {
+    const objectURL = file && file.objectURL 
+        ? file.objectURL 
+        : URL.createObjectURL(file);
+
+    return (
+        <div className="p-fileupload-row flex items-center gap-3">
+            <img
+                src={objectURL}
+                alt={file.name}
+                className="w-5 h-5 object-cover rounded border"
+            />
+            <span className="text-sm font-medium">{file.name}</span>
+        </div>
+    );
+}}
+
+/>
+
+
+
+
+
+
+
+{/* STATUS TEXT */}
+{uploadStatus === "selected" && (
+    <p className="text-yellow-600 text-sm mt-2">File dipilih, klik upload…</p>
+)}
+
+{uploadStatus === "success" && (
+    <p className="text-green-600 text-sm mt-2">Upload berhasil ✓</p>
+)}
+
                 </fieldset>
             </Dialog>
 
@@ -223,20 +262,52 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
                 </div>
                 <fieldset className="p-3 border-round border-1 border-gray-300">
                     <legend className="text-sm font-semibold">Ganti Gambar (opsional)</legend>
-                    <FileUpload
-                        mode="advanced"
-                        accept="image/*"
-                        customUpload
-                        chooseLabel="Pilih File"
-                        uploadLabel="Upload"
-                        cancelLabel="Batal"
-                        onSelect={handleFileSelect}
-                        emptyTemplate={
-                            <p className="m-0 text-sm text-gray-500">
-                                Seret dan lepas file di sini atau klik untuk memilih.
-                            </p>
-                        }
-                    />
+<FileUpload
+    mode="advanced"
+    accept="image/*"
+    customUpload
+    uploadHandler={() => setUploadStatus("success")}
+    chooseLabel="Pilih File"
+    uploadLabel="Upload"
+    cancelLabel="Batal"
+    onSelect={(e) => {
+        handleFileSelect(e);
+        setUploadStatus("selected");
+    }}
+    /* 🔥 Hilangkan 'pending' + fix TypeScript */
+  itemTemplate={(file: any) => {
+    const objectURL = file && file.objectURL 
+        ? file.objectURL 
+        : URL.createObjectURL(file);
+
+    return (
+        <div className="p-fileupload-row flex items-center gap-3">
+            <img
+                src={objectURL}
+                alt={file.name}
+                className="w-5 h-5 object-cover rounded border"
+            />
+            <span className="text-sm font-medium">{file.name}</span>
+        </div>
+    );
+}}
+
+/>
+
+
+
+
+
+
+{/* STATUS TEXT */}
+{uploadStatus === "selected" && (
+    <p className="text-yellow-600 text-sm mt-2">File dipilih, klik upload…</p>
+)}
+
+{uploadStatus === "success" && (
+    <p className="text-green-600 text-sm mt-2">Upload berhasil ✓</p>
+)}
+
                 </fieldset>
             </Dialog>
         </>

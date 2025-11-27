@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { Toast } from 'primereact/toast';
 import { ProgressSpinner } from 'primereact/progressspinner';
-import DataTableLanding from '@/app/(full-page)/component/datatablelanding/page';
+import DataTableLanding from '@/app/(full-page)/component/datatablelanding/datablelanding';
 import { API_ENDPOINTS } from '@/app/api/losbackend/api';
 
 const CMSLandingPage = () => {

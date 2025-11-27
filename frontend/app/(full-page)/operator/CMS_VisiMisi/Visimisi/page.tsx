@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { Toast } from 'primereact/toast';
-import DataTableVisiMisi from '@/app/(full-page)/component/datatablevisimisi/page';
+import DataTableVisiMisi from '@/app/(full-page)/component/datatablevisimisi/datablevisimisi';
 import { API_ENDPOINTS } from '@/app/api/losbackend/api';
 
 interface VisiMisi {

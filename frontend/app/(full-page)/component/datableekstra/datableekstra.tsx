@@ -43,13 +43,16 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
     const [judul, setJudul] = useState('');
     const [deskripsi, setDeskripsi] = useState('');
     const [gambar, setGambar] = useState<File | null>(null);
+
     const toast = useRef<Toast>(null);
+    const [uploadStatus, setUploadStatus] = useState<string | null>(null);
 
     // === Dialog Add ===
     const openAddDialog = () => {
         setJudul('');
         setDeskripsi('');
         setGambar(null);
+        setUploadStatus(null);  
         setShowDialog(true);
     };
 
@@ -59,13 +62,27 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
         setJudul(rowData.judul || '');
         setDeskripsi(rowData.deskripsi || '');
         setGambar(null);
+        setUploadStatus(null); 
         setShowEditDialog(true);
     };
 
-    // === File Upload Handler ===
+    // === File Select ===
     const handleFileSelect = (e: FileUploadSelectEvent) => {
         const file = e.files[0];
         setGambar(file);
+        setUploadStatus("selected");
+    };
+
+    // === Upload Button ===
+    const handleUpload = () => {
+        setUploadStatus("success");
+
+        toast.current?.show({
+            severity: "success",
+            summary: "Berhasil Upload",
+            detail: "Gambar berhasil diunggah.",
+            life: 2500,
+        });
     };
 
     // === Add ===
@@ -97,9 +114,8 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
         }
     };
 
-    // === Tampilkan path gambar sebagai teks ===
+    // === Menampilkan path gambar ===
     const imageBodyTemplate = (rowData: any) => {
-        // Gunakan G besar sesuai field backend
         const path = rowData.Gambar || rowData.gambar;
         return (
             <span className="text-gray-700">
@@ -111,31 +127,8 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
     // === Tombol aksi ===
     const actionBodyTemplate = (rowData: any) => (
         <div className="flex gap-2">
-            <Button
-                icon="pi pi-pencil"
-                className="p-button-rounded p-button-info"
-                onClick={() => openEditDialog(rowData)}
-            />
-            <Button
-                icon="pi pi-trash"
-                className="p-button-rounded p-button-danger"
-                onClick={() => handleDeleteData(rowData.id)}
-            />
-        </div>
-    );
-
-    // === Footer Dialog ===
-    const dialogFooter = (
-        <div className="flex justify-end gap-2">
-            <Button label="Batal" icon="pi pi-times" onClick={() => setShowDialog(false)} className="p-button-text" />
-            <Button label="Simpan" icon="pi pi-check" onClick={handleAddData} autoFocus />
-        </div>
-    );
-
-    const editDialogFooter = (
-        <div className="flex justify-end gap-2">
-            <Button label="Batal" icon="pi pi-times" onClick={() => setShowEditDialog(false)} className="p-button-text" />
-            <Button label="Update" icon="pi pi-check" onClick={handleUpdateData} autoFocus />
+            <Button icon="pi pi-pencil" className="p-button-rounded p-button-info" onClick={() => openEditDialog(rowData)} />
+            <Button icon="pi pi-trash" className="p-button-rounded p-button-danger" onClick={() => handleDeleteData(rowData.id)} />
         </div>
     );
 
@@ -144,18 +137,12 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
             <Toast ref={toast} />
 
             <div className="card">
-                <div className="flex justify-between align-items-center mb-3">
-                    <h2 className="text-xl font-bold">Daftar Fasilitas</h2>
+                <div className="flex justify-between mb-3">
+               
                     <Button label="Tambah Data" icon="pi pi-plus" onClick={openAddDialog} />
                 </div>
 
-                <DataTable
-                    value={data}
-                    loading={loading}
-                    paginator
-                    rows={10}
-                    responsiveLayout="scroll"
-                >
+                <DataTable value={data} loading={loading} paginator rows={10} responsiveLayout="scroll">
                     {columns.map((col, i) => (
                         <Column
                             key={i}
@@ -169,24 +156,27 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
             </div>
 
             {/* === Tambah Data === */}
-            <Dialog
-                header="Tambah Data"
-                visible={showDialog}
-                style={{ width: '35rem' }}
-                modal
-                onHide={() => setShowDialog(false)}
-                footer={dialogFooter}
+            <Dialog header="Tambah Data" visible={showDialog} style={{ width: '35rem' }} modal onHide={() => setShowDialog(false)}
+                footer={
+                    <div className="flex justify-end gap-2">
+                        <Button label="Batal" icon="pi pi-times" onClick={() => setShowDialog(false)} className="p-button-text" />
+                        <Button label="Simpan" icon="pi pi-check" onClick={handleAddData} />
+                    </div>
+                }
             >
                 <div className="field mb-3">
                     <label htmlFor={nameField}>{inputLabel}</label>
                     <InputText id={nameField} value={judul} onChange={(e) => setJudul(e.target.value)} className="w-full" />
                 </div>
+
                 <div className="field mb-3">
                     <label htmlFor={nameField2}>{inputLabel2}</label>
                     <InputText id={nameField2} value={deskripsi} onChange={(e) => setDeskripsi(e.target.value)} className="w-full" />
                 </div>
+
                 <fieldset className="p-3 border-round border-1 border-gray-300">
                     <legend className="text-sm font-semibold">Upload Gambar</legend>
+
                     <FileUpload
                         mode="advanced"
                         accept="image/*"
@@ -195,48 +185,81 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
                         uploadLabel="Upload"
                         cancelLabel="Batal"
                         onSelect={handleFileSelect}
-                        emptyTemplate={
-                            <p className="m-0 text-sm text-gray-500">
-                                Seret dan lepas file di sini atau klik untuk memilih.
-                            </p>
-                        }
+                        uploadHandler={handleUpload}
+                        emptyTemplate={<p className="m-0 text-sm text-gray-500">Seret file ke sini atau klik untuk memilih.</p>}
+                        itemTemplate={(file: any) => {
+                            const objectURL = file?.objectURL ?? URL.createObjectURL(file);
+
+                            return (
+                                <div className="p-fileupload-row flex items-center gap-3 py-2">
+                                    <img src={objectURL} alt={file.name} className="w-5 h-5 object-cover rounded border" />
+                                    <span className="text-sm">{file.name}</span>
+                                </div>
+                            );
+                        }}
                     />
+
+                    {uploadStatus === "selected" && (
+                        <p className="text-yellow-600 text-sm mt-2">File dipilih, klik upload…</p>
+                    )}
+
+                    {uploadStatus === "success" && (
+                        <p className="text-green-600 text-sm mt-2">Upload berhasil ✓</p>
+                    )}
                 </fieldset>
             </Dialog>
 
             {/* === Edit Data === */}
-            <Dialog
-                header="Edit Data"
-                visible={showEditDialog}
-                style={{ width: '35rem' }}
-                modal
-                onHide={() => setShowEditDialog(false)}
-                footer={editDialogFooter}
+            <Dialog header="Edit Data" visible={showEditDialog} style={{ width: '35rem' }} modal onHide={() => setShowEditDialog(false)}
+                footer={
+                    <div className="flex justify-end gap-2">
+                        <Button label="Batal" icon="pi pi-times" onClick={() => setShowEditDialog(false)} className="p-button-text" />
+                        <Button label="Update" icon="pi pi-check" onClick={handleUpdateData} />
+                    </div>
+                }
             >
                 <div className="field mb-3">
                     <label htmlFor={nameField}>{inputLabel}</label>
                     <InputText id={nameField} value={judul} onChange={(e) => setJudul(e.target.value)} className="w-full" />
                 </div>
+
                 <div className="field mb-3">
                     <label htmlFor={nameField2}>{inputLabel2}</label>
                     <InputText id={nameField2} value={deskripsi} onChange={(e) => setDeskripsi(e.target.value)} className="w-full" />
                 </div>
+
                 <fieldset className="p-3 border-round border-1 border-gray-300">
-                    <legend className="text-sm font-semibold">Ganti Gambar (opsional)</legend>
+                    <legend className="text-sm font-semibold">Ganti Gambar</legend>
+
                     <FileUpload
                         mode="advanced"
                         accept="image/*"
                         customUpload
+                        onSelect={handleFileSelect}
+                        uploadHandler={handleUpload}
                         chooseLabel="Pilih File"
                         uploadLabel="Upload"
                         cancelLabel="Batal"
-                        onSelect={handleFileSelect}
-                        emptyTemplate={
-                            <p className="m-0 text-sm text-gray-500">
-                                Seret dan lepas file di sini atau klik untuk memilih.
-                            </p>
-                        }
+                        emptyTemplate={<p className="m-0 text-sm text-gray-500">Seret atau pilih file.</p>}
+                        itemTemplate={(file: any) => {
+                            const objectURL = file?.objectURL ?? URL.createObjectURL(file);
+
+                            return (
+                                <div className="p-fileupload-row flex items-center gap-3 py-2">
+                                    <img src={objectURL} alt={file.name} className="w-5 h-5 object-cover rounded border" />
+                                    <span className="text-sm">{file.name}</span>
+                                </div>
+                            );
+                        }}
                     />
+
+                    {uploadStatus === "selected" && (
+                        <p className="text-yellow-600 text-sm mt-2">File dipilih, klik upload…</p>
+                    )}
+
+                    {uploadStatus === "success" && (
+                        <p className="text-green-600 text-sm mt-2">Upload berhasil ✓</p>
+                    )}
                 </fieldset>
             </Dialog>
         </>
