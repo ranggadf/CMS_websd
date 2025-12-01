@@ -1,35 +1,26 @@
-"use client"
-import React, { useState, useEffect, useRef } from 'react';
+'use client';
+import React, { useRef } from 'react';
 import { TabView, TabPanel } from 'primereact/tabview';
 import { Toast } from 'primereact/toast';
-import TambahNavbar from './Hubkami/page';
+// Ubah nama import agar lebih jelas
+import CMSHubungiKami from './Hubkami/page';
 
-
-const TambahanAnalisaKredit = () => {
+const EditHubungi = () => {
     const toast = useRef<Toast>(null);
 
     return (
         <div className="card">
-            <h2 className='text-2xl font-bold mb-4'>CMS Hubungi Kami</h2>
-            <TabView activeIndex={1}>
+            <h2 className="text-2xl font-bold mb-4">CMS Hubungi Kami</h2>
+            {/* Perbaiki activeIndex menjadi 0 */}
+            <TabView activeIndex={0}>
                 <Toast ref={toast} />
                 <TabPanel header="Hubungi kami ">
-                    <TambahNavbar/>
+                    {/* Gunakan nama komponen yang benar */}
+                    <CMSHubungiKami />
                 </TabPanel>
-   
-               
-                {/* <TabPanel header="Tambah Navbar">
-                    <TambahData />
-                </TabPanel> */}
-                {/* <TabPanel header="Tambah Judul">
-                    <TambahTitle />
-                </TabPanel>
-                <TabPanel header="Tambah Deskripsi">
-                    <TambahDeskripsi />
-                </TabPanel> */}
             </TabView>
         </div>
     );
 };
 
-export default TambahanAnalisaKredit;
+export default EditHubungi;
