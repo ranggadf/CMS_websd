@@ -28,12 +28,8 @@ export default function DataTableHubungiKami({
     columns: any[];
     onUpdate: (id: string, form: Omit<HubungiKami, 'id'>) => Promise<void>;
 }) {
-    // const [showDialog, setShowDialog] = useState(false); // Hapus state Tambah
     const [showEditDialog, setShowEditDialog] = useState(false);
-    // const [deleteDialogVisible, setDeleteDialogVisible] = useState(false); // Hapus state Hapus
-    // const [deleteId, setDeleteId] = useState<string | null>(null); // Hapus state Hapus
     const [selected, setSelected] = useState<HubungiKami | null>(null);
-
     const [judul, setJudul] = useState('');
     const [noTelp, setNoTelp] = useState('');
     const [email, setEmail] = useState('');

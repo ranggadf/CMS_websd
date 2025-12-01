@@ -1,54 +1,68 @@
 'use client';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, MutableRefObject, useEffect } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
-import { InputText } from 'primereact/inputtext';
+import { InputTextarea } from 'primereact/inputtextarea';
 import { Toast } from 'primereact/toast';
 
 interface DataTableVisiMisiProps {
     data: any[];
     loading: boolean;
     columns: { field: string; header: string }[];
-    onAdd: (visiList: string[], misiList: string[]) => void;
-    onUpdate: (id: string, visiList: string[], misiList: string[]) => void;
+    // onUpdate sekarang menangani Add dan Update: (id: string | null, visiText: string, misiList: string[])
+    onUpdate: (id: string | null, visiText: string, misiList: string[]) => void;
     onDelete: (id: string) => void;
+    showOnlyAdd: boolean; // Tidak digunakan, tapi dipertahankan
+    toastRef: MutableRefObject<Toast | null>;
 }
 
-const DataTableVisiMisi: React.FC<DataTableVisiMisiProps> = ({
-    data,
-    loading,
-    columns,
-    onAdd,
-    onUpdate,
-    onDelete,
-}) => {
-    const [showDialog, setShowDialog] = useState(false);
-    const [showEditDialog, setShowEditDialog] = useState(false);
+const DataTableVisiMisi: React.FC<DataTableVisiMisiProps> = ({ data, loading, columns, onUpdate, onDelete, toastRef }) => {
+    // Kita hanya perlu satu dialog edit/tambah
+    const [showFormDialog, setShowFormDialog] = useState(false);
     const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
     const [deleteId, setDeleteId] = useState<string | null>(null);
-    const [selectedData, setSelectedData] = useState<any>(null);
+    const [selectedData, setSelectedData] = useState<any>(null); // Data yang akan diedit
 
-    const [visiList, setVisiList] = useState<string[]>(['']);
-    const [misiList, setMisiList] = useState<string[]>(['']);
+    // State untuk form
+    const [visiText, setVisiText] = useState<string>(''); // Visi sebagai string tunggal
+    const [misiList, setMisiList] = useState<string[]>(['']); // Misi sebagai list
 
-    const toast = useRef<Toast>(null);
+    const toast = toastRef;
 
-    // === TAMBAH ===
-    const openAddDialog = () => {
-        setVisiList(['']);
-        setMisiList(['']);
-        setShowDialog(true);
+    // === INTI LOGIKA FORM ===
+    const openFormDialog = (rowData: any | null) => {
+        setSelectedData(rowData);
+
+        // 1. Inisialisasi Visi (Membersihkan karakter kutip ganda/tunggal yang tidak perlu)
+        const cleanVisi = rowData?.visi ? rowData.visi.replace(/["']/g, '').trim() : '';
+        setVisiText(cleanVisi);
+
+        // 2. Inisialisasi Misi (memecah string koma-separated menjadi array)
+        const initialMisi = rowData?.misi
+            ? rowData.misi
+                  .replace(/["']/g, '') // Bersihkan tanda kutip sebelum split
+                  .split(',')
+                  .map((m: string) => m.trim())
+                  .filter((m: string) => m.length > 0) // Hapus string kosong setelah trim
+            : [];
+
+        // Pastikan minimal ada satu field input (berisi data atau kosong)
+        setMisiList(initialMisi.length > 0 ? initialMisi : ['']);
+
+        setShowFormDialog(true);
     };
 
-    const addVisiField = () => setVisiList([...visiList, '']);
     const addMisiField = () => setMisiList([...misiList, '']);
 
-    const updateVisiField = (index: number, value: string) => {
-        const updated = [...visiList];
-        updated[index] = value;
-        setVisiList(updated);
+    // Fungsi untuk menghapus field Misi
+    const removeMisiField = (index: number) => {
+        // Hapus item pada index tersebut
+        const newMisiList = misiList.filter((_, i) => i !== index);
+
+        // Jika list menjadi kosong, inisialisasi dengan satu field kosong
+        setMisiList(newMisiList.length === 0 ? [''] : newMisiList);
     };
 
     const updateMisiField = (index: number, value: string) => {
@@ -57,37 +71,26 @@ const DataTableVisiMisi: React.FC<DataTableVisiMisiProps> = ({
         setMisiList(updated);
     };
 
-    const handleAddData = () => {
-        const filteredVisi = visiList.filter(v => v.trim() !== '');
-        const filteredMisi = misiList.filter(m => m.trim() !== '');
+    const handleSaveData = () => {
+        // PENTING: Lakukan trim pada visiText saat disimpan
+        const trimmedVisi = visiText.trim();
+        // Hanya ambil misi yang benar-benar memiliki konten setelah di-trim
+        const filteredMisi = misiList.map((m) => m.trim()).filter((m) => m.length > 0);
 
-        if (!filteredVisi.length && !filteredMisi.length) {
+        if (trimmedVisi === '' || filteredMisi.length === 0) {
             toast.current?.show({
                 severity: 'warn',
                 summary: 'Peringatan',
-                detail: 'Isi minimal satu visi atau misi!',
-                life: 3000,
+                detail: 'Visi dan minimal satu Misi harus diisi!',
+                life: 3000
             });
             return;
         }
 
-        onAdd(filteredVisi, filteredMisi);
-        setShowDialog(false);
-    };
-
-    // === EDIT ===
-    const openEditDialog = (rowData: any) => {
-        setSelectedData(rowData);
-        setVisiList(rowData.visi ? rowData.visi.split(',').map((v: string) => v.trim()) : ['']);
-        setMisiList(rowData.misi ? rowData.misi.split(',').map((m: string) => m.trim()) : ['']);
-        setShowEditDialog(true);
-    };
-
-    const handleUpdateData = () => {
-        const filteredVisi = visiList.filter(v => v.trim() !== '');
-        const filteredMisi = misiList.filter(m => m.trim() !== '');
-        onUpdate(selectedData.id, filteredVisi, filteredMisi);
-        setShowEditDialog(false);
+        // Panggil handler onUpdate di CMSVisiMisi.tsx
+        const idToUpdate = selectedData?.id || null;
+        onUpdate(idToUpdate, trimmedVisi, filteredMisi); // Kirim visi yang sudah bersih
+        setShowFormDialog(false);
     };
 
     // === HAPUS ===
@@ -101,33 +104,40 @@ const DataTableVisiMisi: React.FC<DataTableVisiMisiProps> = ({
         setDeleteDialogVisible(false);
     };
 
+    // Template Aksi untuk Data yang Ada
     const actionBodyTemplate = (rowData: any) => (
         <div className="flex gap-2 justify-center">
-            <Button
-                icon="pi pi-pencil"
-                className="p-button-rounded p-button-info"
-                onClick={() => openEditDialog(rowData)}
-            />
-            <Button
-                icon="pi pi-trash"
-                className="p-button-rounded p-button-danger"
-                onClick={() => confirmDelete(rowData.id)}
-            />
+            <Button icon="pi pi-pencil" className="p-button-rounded p-button-info" onClick={() => openFormDialog(rowData)} tooltip="Edit Visi & Misi" />
+            <Button icon="pi pi-trash" className="p-button-rounded p-button-danger" onClick={() => confirmDelete(rowData.id)} tooltip="Hapus Data" />
         </div>
     );
 
-    // === FOOTERS ===
-    const addDialogFooter = (
-        <div className="flex justify-end gap-2">
-            <Button label="Batal" icon="pi pi-times" onClick={() => setShowDialog(false)} className="p-button-text" />
-            <Button label="Simpan" icon="pi pi-check" onClick={handleAddData} />
-        </div>
-    );
+    // Template Body Khusus untuk Kolom Misi (untuk mengatasi karakter aneh)
+    const misiBodyTemplate = (rowData: any) => {
+        if (!rowData.misi) return <span className="italic text-gray-400">Belum ada Misi</span>;
 
-    const editDialogFooter = (
+        // Memecah string Misi dan menampilkan sebagai list
+        const misiPoints = rowData.misi
+            .replace(/["']/g, '') // Membersihkan tanda kutip ganda/tunggal
+            .split(',')
+            .map((m: string) => m.trim())
+            .filter((m: string) => m.length > 0);
+
+        return (
+            <ul className="list-disc list-inside space-y-1 text-sm">
+                {/* PERBAIKAN: Menambahkan tipe eksplisit 'string' untuk 'point' */}
+                {misiPoints.map((point: string, index: number) => (
+                    <li key={index}>{point}</li>
+                ))}
+            </ul>
+        );
+    };
+
+    // === FOOTERS DIALOG ===
+    const formDialogFooter = (
         <div className="flex justify-end gap-2">
-            <Button label="Batal" icon="pi pi-times" onClick={() => setShowEditDialog(false)} className="p-button-text" />
-            <Button label="Update" icon="pi pi-check" onClick={handleUpdateData} />
+            <Button label="Batal" icon="pi pi-times" onClick={() => setShowFormDialog(false)} className="p-button-text" />
+            <Button label="Simpan" icon="pi pi-check" onClick={handleSaveData} />
         </div>
     );
 
@@ -138,125 +148,77 @@ const DataTableVisiMisi: React.FC<DataTableVisiMisiProps> = ({
         </div>
     );
 
+    // Fungsi untuk me-render list input Misi
+    const renderMisiInputList = () => (
+        <div className="mb-4">
+            <label className="block text-sm font-semibold mb-2">Daftar Misi (Satu Misi per Baris)</label>
+            {misiList.map((item, i) => (
+                <div key={i} className="flex gap-2 mb-2 items-start">
+                    <InputTextarea value={item} onChange={(e) => updateMisiField(i, e.target.value)} className="w-full" rows={2} placeholder={`Misi Point ${i + 1}`} />
+                    {/* HANYA tampilkan tombol hapus jika ada lebih dari satu field ATAU field tersebut tidak kosong */}
+                    {(misiList.length > 1 || (misiList.length === 1 && item.trim() !== '')) && (
+                        <Button icon="pi pi-times" className="p-button-rounded p-button-danger p-button-text mt-1" onClick={() => removeMisiField(i)} tooltip={`Hapus Misi ${i + 1}`} tooltipOptions={{ position: 'right' }} />
+                    )}
+                </div>
+            ))}
+            {/* PASTIKAN tombol Tambah Misi hanya muncul di sini, tidak diulang */}
+            <Button label={`Tambah Misi`} icon="pi pi-plus" className="p-button-text text-blue-500 mt-2" onClick={addMisiField} />
+        </div>
+    );
+
+    // Render Logic: Jika data kosong, tampilkan tombol untuk menambah data pertama
+    if (!loading && data.length === 0) {
+        return (
+            <div className="text-center p-10 border border-dashed border-gray-300 rounded-lg">
+                <p className="text-lg text-gray-600 mb-4">Belum ada data Visi & Misi yang tersimpan.</p>
+                <Button label="Tambah Data Pertama" icon="pi pi-plus" onClick={() => openFormDialog(null)} className="p-button-success" />
+                {/* Dialog form untuk Tambah Data Pertama */}
+                <Dialog header="Tambah Visi & Misi" visible={showFormDialog} style={{ width: '40rem' }} modal onHide={() => setShowFormDialog(false)} footer={formDialogFooter}>
+                    <div className="mb-4">
+                        <label className="block text-sm font-semibold mb-2">Visi</label>
+                        <InputTextarea value={visiText} onChange={(e) => setVisiText(e.target.value)} className="w-full" rows={3} placeholder="Tuliskan Visi Anda di sini..." />
+                    </div>
+                    {renderMisiInputList()}
+                </Dialog>
+            </div>
+        );
+    }
+
     return (
         <>
-            <Toast ref={toast} />
-            <div className="card">
-                <div className="flex justify-between align-items-center mb-3">
-                    <Button label="Tambah Data" icon="pi pi-plus" onClick={openAddDialog} />
-                </div>
+            <div className="card p-0">
+                {/* Menghilangkan div yang berisi tulisan keterangan */}
+                <div className="flex justify-end align-items-center mb-3">{/* Kotak ini dibiarkan kosong atau digunakan untuk elemen lain */}</div>
 
                 <DataTable
                     value={data}
                     loading={loading}
-                    paginator
-                    rows={10}
+                    // HILANGKAN paginator
+                    rows={data.length || 1} // Tetapkan rows sesuai jumlah data (untuk data tunggal)
                     responsiveLayout="scroll"
+                    className="shadow-none"
                 >
-                    {/* Sembunyikan kolom id dan hilangkan panah sort */}
+                    {/* Kolom ID disembunyikan */}
                     {columns
-                        .filter(col => col.field !== 'id')
-                        .map((col, i) => (
-                            <Column key={i} field={col.field} header={col.header} sortable={false} />
-                        ))}
-                    <Column header="Aksi" body={actionBodyTemplate} />
+                        .filter((col) => col.field !== 'id')
+                        .map((col, i) => {
+                            if (col.field === 'misi') {
+                                // Terapkan body template khusus untuk kolom Misi
+                                return <Column key={i} field={col.field} header={col.header} sortable={false} body={misiBodyTemplate} />;
+                            }
+                            return <Column key={i} field={col.field} header={col.header} sortable={false} />;
+                        })}
+                    <Column header="Aksi" body={actionBodyTemplate} align="center" style={{ width: '10%' }} />
                 </DataTable>
             </div>
 
-            {/* === Dialog Tambah === */}
-            <Dialog
-                header="Tambah Visi & Misi"
-                visible={showDialog}
-                style={{ width: '40rem' }}
-                modal
-                onHide={() => setShowDialog(false)}
-                footer={addDialogFooter}
-            >
+            {/* === Dialog Edit/Update Data === */}
+            <Dialog header={selectedData ? 'Edit Visi & Misi' : 'Tambah Visi & Misi'} visible={showFormDialog} style={{ width: '40rem' }} modal onHide={() => setShowFormDialog(false)} footer={formDialogFooter}>
                 <div className="mb-4">
                     <label className="block text-sm font-semibold mb-2">Visi</label>
-                    {visiList.map((v, i) => (
-                        <InputText
-                            key={i}
-                            value={v}
-                            onChange={(e) => updateVisiField(i, e.target.value)}
-                            className="w-full mb-2"
-                            placeholder={`Visi ${i + 1}`}
-                        />
-                    ))}
-                    <Button
-                        label="+ Tambah Visi"
-                        icon="pi pi-plus"
-                        className="p-button-text text-blue-500"
-                        onClick={addVisiField}
-                    />
+                    <InputTextarea value={visiText} onChange={(e) => setVisiText(e.target.value)} className="w-full" rows={3} placeholder="Tuliskan Visi Anda di sini..." />
                 </div>
-
-                <div>
-                    <label className="block text-sm font-semibold mb-2">Misi</label>
-                    {misiList.map((m, i) => (
-                        <InputText
-                            key={i}
-                            value={m}
-                            onChange={(e) => updateMisiField(i, e.target.value)}
-                            className="w-full mb-2"
-                            placeholder={`Misi ${i + 1}`}
-                        />
-                    ))}
-                    <Button
-                        label="+ Tambah Misi"
-                        icon="pi pi-plus"
-                        className="p-button-text text-blue-500"
-                        onClick={addMisiField}
-                    />
-                </div>
-            </Dialog>
-
-            {/* === Dialog Edit === */}
-            <Dialog
-                header="Edit Visi & Misi"
-                visible={showEditDialog}
-                style={{ width: '40rem' }}
-                modal
-                onHide={() => setShowEditDialog(false)}
-                footer={editDialogFooter}
-            >
-                <div className="mb-4">
-                    <label className="block text-sm font-semibold mb-2">Visi</label>
-                    {visiList.map((v, i) => (
-                        <InputText
-                            key={i}
-                            value={v}
-                            onChange={(e) => updateVisiField(i, e.target.value)}
-                            className="w-full mb-2"
-                            placeholder={`Visi ${i + 1}`}
-                        />
-                    ))}
-                    <Button
-                        label="+ Tambah Visi"
-                        icon="pi pi-plus"
-                        className="p-button-text text-blue-500"
-                        onClick={addVisiField}
-                    />
-                </div>
-
-                <div>
-                    <label className="block text-sm font-semibold mb-2">Misi</label>
-                    {misiList.map((m, i) => (
-                        <InputText
-                            key={i}
-                            value={m}
-                            onChange={(e) => updateMisiField(i, e.target.value)}
-                            className="w-full mb-2"
-                            placeholder={`Misi ${i + 1}`}
-                        />
-                    ))}
-                    <Button
-                        label="+ Tambah Misi"
-                        icon="pi pi-plus"
-                        className="p-button-text text-blue-500"
-                        onClick={addMisiField}
-                    />
-                </div>
+                {renderMisiInputList()}
             </Dialog>
 
             {/* === Dialog Konfirmasi Hapus === */}
@@ -271,9 +233,7 @@ const DataTableVisiMisi: React.FC<DataTableVisiMisiProps> = ({
                 footer={deleteDialogFooter}
             >
                 <i className="pi pi-exclamation-triangle text-red-500 text-4xl mb-4"></i>
-                <p className="text-lg font-medium text-gray-700">
-                    Apakah Anda yakin ingin menghapus data ini?
-                </p>
+                <p className="text-lg font-medium text-gray-700">Apakah Anda yakin ingin menghapus data ini? Aksi ini akan menghapus Visi dan semua Misi yang terkait.</p>
             </Dialog>
         </>
     );
