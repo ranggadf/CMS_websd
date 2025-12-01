@@ -66,19 +66,19 @@ public function getEkskul()
         $request->validate([
             'judul' => 'required|string|max:255',
             'deskripsi' => 'required|string',
-            'gambar' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
+            'Gambar' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
         ]);
 
         $fasilitas->judul = $request->judul;
         $fasilitas->deskripsi = $request->deskripsi;
 
         // Jika upload gambar baru
-        if ($request->hasFile('gambar')) {
+        if ($request->hasFile('Gambar')) {
             if ($fasilitas->Gambar && File::exists(public_path($fasilitas->Gambar))) {
                 File::delete(public_path($fasilitas->Gambar));
             }
 
-            $file = $request->file('gambar');
+            $file = $request->file('Gambar');
             $filename = time() . '_' . $file->getClientOriginalName();
             $file->move(public_path('images/fasilitas'), $filename);
             $fasilitas->Gambar = 'images/fasilitas/' . $filename;

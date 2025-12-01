@@ -239,38 +239,46 @@ const imageBodyTemplate = (rowData: any) => {
         )}
 
         {section === '3' && (
-          <>
-            <div className="field mb-3">
-              <label>Jumlah Siswa Laki-laki</label>
-              <InputText
-                type="number"
-                value={jmlLaki?.toString() || ''}
-                onChange={(e) => setJmlLaki(Number(e.target.value))}
-                className="w-full"
-              />
-            </div>
+  <>
+    <div className="field mb-3">
+      <label>Jumlah Siswa Laki-laki</label>
+      <InputText
+        type="number"
+        value={jmlLaki?.toString() || ''}
+        onChange={(e) => {
+          const val = Number(e.target.value);
+          setJmlLaki(val);
+          setTotalSiswa(val + (jmlPerempuan || 0)); // otomatis update total
+        }}
+        className="w-full"
+      />
+    </div>
 
-            <div className="field mb-3">
-              <label>Jumlah Siswa Perempuan</label>
-              <InputText
-                type="number"
-                value={jmlPerempuan?.toString() || ''}
-                onChange={(e) => setJmlPerempuan(Number(e.target.value))}
-                className="w-full"
-              />
-            </div>
+    <div className="field mb-3">
+      <label>Jumlah Siswa Perempuan</label>
+      <InputText
+        type="number"
+        value={jmlPerempuan?.toString() || ''}
+        onChange={(e) => {
+          const val = Number(e.target.value);
+          setJmlPerempuan(val);
+          setTotalSiswa((jmlLaki || 0) + val); // otomatis update total
+        }}
+        className="w-full"
+      />
+    </div>
 
-            <div className="field mb-3">
-              <label>Total Siswa</label>
-              <InputText
-                type="number"
-                value={totalSiswa?.toString() || ''}
-                onChange={(e) => setTotalSiswa(Number(e.target.value))}
-                className="w-full"
-              />
-            </div>
-          </>
-        )}
+    <div className="field mb-3">
+      <label>Total Siswa</label>
+      <InputText
+        type="number"
+        value={totalSiswa?.toString() || ''}
+        readOnly
+        className="w-full bg-gray-100 cursor-not-allowed"
+      />
+    </div>
+  </>
+)}
 
         {section !== '3' && (
   <fieldset className="p-3 border-round border-1 border-gray-300">

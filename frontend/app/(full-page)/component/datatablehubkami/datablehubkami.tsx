@@ -30,6 +30,9 @@ export default function DataTableHubungiKami({
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [selected, setSelected] = useState<HubungiKami | null>(null);
 
+  const [errorNoTelp, setErrorNoTelp] = useState('');
+  const [errorEmail, setErrorEmail] = useState('');
+
   const [judul, setJudul] = useState('');
   const [noTelp, setNoTelp] = useState('');
   const [email, setEmail] = useState('');
@@ -37,12 +40,39 @@ export default function DataTableHubungiKami({
 
   const toast = useRef<Toast>(null);
 
+  // VALIDASI NOMOR TELEPON
+  const handleNoTelpChange = (e: any) => {
+    const value = e.target.value;
+    if (/^[0-9]*$/.test(value)) {
+      setNoTelp(value);
+      setErrorNoTelp('');
+    } else {
+      setErrorNoTelp('Nomor telepon hanya boleh angka');
+    }
+  };
+
+  // VALIDASI EMAIL
+  const handleEmailChange = (e: any) => {
+    const value = e.target.value;
+    setEmail(value);
+
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!regex.test(value)) {
+      setErrorEmail('Format email tidak valid (harus ada @ dan domain)');
+    } else {
+      setErrorEmail('');
+    }
+  };
+
   // === Tambah ===
   const openAddDialog = () => {
     setJudul('');
     setNoTelp('');
     setEmail('');
     setAlamat('');
+    setErrorNoTelp('');
+    setErrorEmail('');
     setShowDialog(true);
   };
 
@@ -56,6 +86,18 @@ export default function DataTableHubungiKami({
       });
       return;
     }
+
+    if (!/^[0-9]+$/.test(noTelp)) {
+      setErrorNoTelp('Nomor telepon hanya boleh angka');
+      return;
+    }
+
+    const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!regexEmail.test(email)) {
+      setErrorEmail('Format email tidak valid');
+      return;
+    }
+
     onAdd({ judul, no_telp: noTelp, email, alamat });
     setShowDialog(false);
   };
@@ -67,11 +109,25 @@ export default function DataTableHubungiKami({
     setNoTelp(rowData.no_telp);
     setEmail(rowData.email);
     setAlamat(rowData.alamat);
+    setErrorNoTelp('');
+    setErrorEmail('');
     setShowEditDialog(true);
   };
 
   const handleUpdateData = () => {
     if (!selected?.id) return;
+
+    if (!/^[0-9]+$/.test(noTelp)) {
+      setErrorNoTelp('Nomor telepon hanya boleh angka');
+      return;
+    }
+
+    const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!regexEmail.test(email)) {
+      setErrorEmail('Format email tidak valid');
+      return;
+    }
+
     onUpdate(selected.id, { judul, no_telp: noTelp, email, alamat });
     setShowEditDialog(false);
   };
@@ -133,9 +189,8 @@ export default function DataTableHubungiKami({
         </div>
 
         <DataTable value={data} loading={loading} paginator rows={10} responsiveLayout="scroll">
-          {/* Sembunyikan kolom 'id' dan hilangkan panah sort */}
           {columns
-            .filter((col: any) => col.field !== 'id') // kolom id tidak ditampilkan
+            .filter((col: any) => col.field !== 'id')
             .map((col: any, i: number) => (
               <Column key={i} field={col.field} header={col.header} sortable={false} />
             ))}
@@ -163,15 +218,16 @@ export default function DataTableHubungiKami({
           />
         </div>
 
-        <div className="field mb-3">
+        <div className="field mb-1">
           <label htmlFor="no_telp">Nomor Telepon</label>
           <InputText
             id="no_telp"
             value={noTelp}
-            onChange={(e) => setNoTelp(e.target.value)}
+            onChange={handleNoTelpChange}
             className="w-full"
             placeholder="Masukkan nomor telepon"
           />
+          {errorNoTelp && <small className="p-error">{errorNoTelp}</small>}
         </div>
 
         <div className="field mb-3">
@@ -179,10 +235,11 @@ export default function DataTableHubungiKami({
           <InputText
             id="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={handleEmailChange}
             className="w-full"
             placeholder="Masukkan email"
           />
+          {errorEmail && <small className="p-error">{errorEmail}</small>}
         </div>
 
         <div className="field mb-3">
@@ -222,9 +279,10 @@ export default function DataTableHubungiKami({
           <InputText
             id="no_telp"
             value={noTelp}
-            onChange={(e) => setNoTelp(e.target.value)}
+            onChange={handleNoTelpChange}
             className="w-full"
           />
+          {errorNoTelp && <small className="p-error">{errorNoTelp}</small>}
         </div>
 
         <div className="field mb-3">
@@ -232,9 +290,10 @@ export default function DataTableHubungiKami({
           <InputText
             id="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={handleEmailChange}
             className="w-full"
           />
+          {errorEmail && <small className="p-error">{errorEmail}</small>}
         </div>
 
         <div className="field mb-3">

@@ -12,8 +12,8 @@ interface DataTableWithCRUDProps {
     data: any[];
     loading: boolean;
     columns: { field: string; header: string }[];
-    onAdd: (judul: string, deskripsi: string, gambar: File | null) => void;
-    onUpdate: (id: string, judul: string, deskripsi: string, gambar: File | null) => void;
+    onAdd: (judul: string, deskripsi: string, Gambar: File | null) => void;
+    onUpdate: (id: string, judul: string, deskripsi: string, Gambar: File | null) => void;
     onDelete: (id: string) => void;
     nameField: string;
     nameField2: string;
@@ -42,7 +42,7 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
     const [selectedData, setSelectedData] = useState<any>(null);
     const [judul, setJudul] = useState('');
     const [deskripsi, setDeskripsi] = useState('');
-    const [gambar, setGambar] = useState<File | null>(null);
+       const [Gambar, setGambar] = useState<File | null>(null);
     const toast = useRef<Toast>(null);
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -70,6 +70,18 @@ const [deleteId, setDeleteId] = useState<string | null>(null);
     setShowEditDialog(true);
 };
 
+ // === Upload Button ===
+    const handleUpload = () => {
+        setUploadStatus("success");
+
+        toast.current?.show({
+            severity: "success",
+            summary: "Berhasil Upload",
+            detail: "Gambar berhasil diunggah.",
+            life: 2500,
+        });
+    };
+
 
     // === File Upload Handler ===
     const handleFileSelect = (e: FileUploadSelectEvent) => {
@@ -88,14 +100,14 @@ const [deleteId, setDeleteId] = useState<string | null>(null);
             });
             return;
         }
-        onAdd(judul, deskripsi, gambar);
+        onAdd(judul, deskripsi, Gambar);
         setShowDialog(false);
     };
 
     // === Update ===
     const handleUpdateData = () => {
         if (!selectedData?.id) return;
-        onUpdate(selectedData.id, judul, deskripsi, gambar);
+        onUpdate(selectedData.id, judul, deskripsi, Gambar);
         setShowEditDialog(false);
     };
 
@@ -108,10 +120,10 @@ const [deleteId, setDeleteId] = useState<string | null>(null);
     // === Tampilkan path gambar sebagai teks ===
     const imageBodyTemplate = (rowData: any) => {
         // Gunakan G besar sesuai field backend
-        const path = rowData.Gambar || rowData.gambar;
+        const path = rowData.Gambar || rowData.Gambar;
         return (
             <span className="text-gray-700">
-                {path ? path : 'Tidak ada gambar'}
+                {path ? path : 'Tidak ada Gambar'}
             </span>
         );
     };
@@ -169,7 +181,7 @@ const [deleteId, setDeleteId] = useState<string | null>(null);
                             key={i}
                             field={col.field}
                             header={col.header}
-                            body={col.field.toLowerCase() === 'gambar' ? imageBodyTemplate : undefined}
+                            body={col.field.toLowerCase() === 'Gambar' ? imageBodyTemplate : undefined}
                         />
                     ))}
                     <Column header="Aksi" body={actionBodyTemplate} />
@@ -196,36 +208,34 @@ const [deleteId, setDeleteId] = useState<string | null>(null);
                 <fieldset className="p-3 border-round border-1 border-gray-300">
                     <legend className="text-sm font-semibold">Upload Gambar</legend>
 <FileUpload
-    mode="advanced"
-    accept="image/*"
-    customUpload
-    uploadHandler={() => setUploadStatus("success")}
-    chooseLabel="Pilih File"
-    uploadLabel="Upload"
-    cancelLabel="Batal"
-    onSelect={(e) => {
-        handleFileSelect(e);
-        setUploadStatus("selected");
-    }}
-    /* 🔥 Hilangkan 'pending' + fix TypeScript */
-  itemTemplate={(file: any) => {
-    const objectURL = file && file.objectURL 
-        ? file.objectURL 
-        : URL.createObjectURL(file);
+                        mode="advanced"
+                        accept="image/*"
+                        customUpload
+                        chooseLabel="Pilih File"
+                        uploadLabel="Upload"
+                        cancelLabel="Batal"
+                        onSelect={handleFileSelect}
+                        uploadHandler={handleUpload}
+                        emptyTemplate={<p className="m-0 text-sm text-gray-500">Seret file ke sini atau klik untuk memilih.</p>}
+                        itemTemplate={(file: any) => {
+                            const objectURL = file?.objectURL ?? URL.createObjectURL(file);
 
-    return (
-        <div className="p-fileupload-row flex items-center gap-3">
-            <img
-                src={objectURL}
-                alt={file.name}
-                className="w-5 h-5 object-cover rounded border"
-            />
-            <span className="text-sm font-medium">{file.name}</span>
-        </div>
-    );
-}}
+                            return (
+                                <div className="p-fileupload-row flex items-center gap-3 py-2">
+                                    <img src={objectURL} alt={file.name} className="w-5 h-5 object-cover rounded border" />
+                                    <span className="text-sm">{file.name}</span>
+                                </div>
+                            );
+                        }}
+                    />
 
-/>
+                    {uploadStatus === "selected" && (
+                        <p className="text-yellow-600 text-sm mt-2">File dipilih, klik upload…</p>
+                    )}
+
+                    {uploadStatus === "success" && (
+                        <p className="text-green-600 text-sm mt-2">Upload berhasil ✓</p>
+                    )}
 
 
 
@@ -265,37 +275,34 @@ const [deleteId, setDeleteId] = useState<string | null>(null);
                 <fieldset className="p-3 border-round border-1 border-gray-300">
                     <legend className="text-sm font-semibold">Ganti Gambar (opsional)</legend>
 <FileUpload
-    mode="advanced"
-    accept="image/*"
-    customUpload
-    uploadHandler={() => setUploadStatus("success")}
-    chooseLabel="Pilih File"
-    uploadLabel="Upload"
-    cancelLabel="Batal"
-    onSelect={(e) => {
-        handleFileSelect(e);
-        setUploadStatus("selected");
-    }}
-    /* 🔥 Hilangkan 'pending' + fix TypeScript */
-  itemTemplate={(file: any) => {
-    const objectURL = file && file.objectURL 
-        ? file.objectURL 
-        : URL.createObjectURL(file);
+                        mode="advanced"
+                        accept="image/*"
+                        customUpload
+                        chooseLabel="Pilih File"
+                        uploadLabel="Upload"
+                        cancelLabel="Batal"
+                        onSelect={handleFileSelect}
+                        uploadHandler={handleUpload}
+                        emptyTemplate={<p className="m-0 text-sm text-gray-500">Seret file ke sini atau klik untuk memilih.</p>}
+                        itemTemplate={(file: any) => {
+                            const objectURL = file?.objectURL ?? URL.createObjectURL(file);
 
-    return (
-        <div className="p-fileupload-row flex items-center gap-3">
-            <img
-                src={objectURL}
-                alt={file.name}
-                className="w-5 h-5 object-cover rounded border"
-            />
-            <span className="text-sm font-medium">{file.name}</span>
-        </div>
-    );
-}}
+                            return (
+                                <div className="p-fileupload-row flex items-center gap-3 py-2">
+                                    <img src={objectURL} alt={file.name} className="w-5 h-5 object-cover rounded border" />
+                                    <span className="text-sm">{file.name}</span>
+                                </div>
+                            );
+                        }}
+                    />
 
-/>
+                    {uploadStatus === "selected" && (
+                        <p className="text-yellow-600 text-sm mt-2">File dipilih, klik upload…</p>
+                    )}
 
+                    {uploadStatus === "success" && (
+                        <p className="text-green-600 text-sm mt-2">Upload berhasil ✓</p>
+                    )}
 
 
 
@@ -306,9 +313,7 @@ const [deleteId, setDeleteId] = useState<string | null>(null);
     <p className="text-yellow-600 text-sm mt-2">File dipilih, klik upload…</p>
 )}
 
-{uploadStatus === "success" && (
-    <p className="text-green-600 text-sm mt-2">Upload berhasil ✓</p>
-)}
+
 
                 </fieldset>
             </Dialog>

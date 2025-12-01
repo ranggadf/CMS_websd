@@ -45,30 +45,37 @@ class LandingController extends Controller
     return response()->json($data, 201);
 }
 
-    public function updateLanding(Request $request, $id)
-    {
-        $data = SectionLanding::findOrFail($id);
+  public function updateLanding(Request $request, $id)
+{
+    $data = SectionLanding::findOrFail($id);
 
-        if ($request->hasFile('Gambar')) {
-            if ($data->Gambar && Storage::disk('public')->exists($data->Gambar)) {
-                Storage::disk('public')->delete($data->Gambar);
-            }
-            $data->Gambar = $request->file('Gambar')->store('images', 'public');
+    $gambarPath = $data->Gambar; // default tetap gambar lama
+
+    if ($request->hasFile('Gambar')) {
+        $file = $request->file('Gambar');
+        $filename = time() . '_' . $file->getClientOriginalName();
+        $file->move(public_path('images'), $filename);
+        $gambarPath = 'images/' . $filename; // path baru
+
+        // Hapus file lama jika ada
+        if ($data->Gambar && file_exists(public_path($data->Gambar))) {
+            unlink(public_path($data->Gambar));
         }
-
-        $data->update([
-            'section' => $request->section ?? $data->section,
-            'judul' => $request->judul ?? $data->judul,
-            'deskripsi' => $request->deskripsi ?? $data->deskripsi,
-            'nama' => $request->nama ?? $data->nama,
-            'jml_siswa_laki' => $request->jml_siswa_laki ?? $data->jml_siswa_laki,
-            'jml_siswa_perempuan' => $request->jml_siswa_perempuan ?? $data->jml_siswa_perempuan,
-            'total_siswa' => $request->total_siswa ?? $data->total_siswa,
-            'Gambar' => $data->Gambar,
-        ]);
-
-        return response()->json(['message' => 'Berhasil diperbarui', 'data' => $data]);
     }
+
+    $data->update([
+        'section' => $request->section ?? $data->section,
+        'judul' => $request->judul ?? $data->judul,
+        'deskripsi' => $request->deskripsi ?? $data->deskripsi,
+        'nama' => $request->nama ?? $data->nama,
+        'jml_siswa_laki' => $request->jml_siswa_laki ?? $data->jml_siswa_laki,
+        'jml_siswa_perempuan' => $request->jml_siswa_perempuan ?? $data->jml_siswa_perempuan,
+        'total_siswa' => $request->total_siswa ?? $data->total_siswa,
+        'Gambar' => $gambarPath, // gunakan path baru atau lama
+    ]);
+
+    return response()->json(['message' => 'Berhasil diperbarui', 'data' => $data]);
+}
 
     public function deleteLanding($id)
     {

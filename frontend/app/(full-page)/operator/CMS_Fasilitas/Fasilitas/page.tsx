@@ -23,75 +23,126 @@ const FasilitasPage = () => {
             setFasilitas(res.data);
         } catch (error) {
             console.error('Error fetching data:', error);
-            toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Gagal mengambil data', life: 3000 });
+            toast.current?.show({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Gagal mengambil data',
+                life: 3000
+            });
         } finally {
             setIsLoading(false);
         }
     };
 
     // 🔹 Tambah data
-    const handleAdd = async (judul: string, deskripsi: string, gambar: File | null) => {
-        try {
-            setIsLoading(true);
+// Tambah data
+// Tambah data
+const handleAdd = async (judul: string, deskripsi: string, Gambar: File | null) => {
+  try {
+    setIsLoading(true);
 
-            const formData = new FormData();
-            formData.append('judul', judul);
-            formData.append('deskripsi', deskripsi);
-            if (gambar instanceof File) {
-                formData.append('Gambar', gambar);
-            }
+    const formData = new FormData();
+    formData.append('judul', judul);
+    formData.append('deskripsi', deskripsi);
+    if (Gambar) formData.append('Gambar', Gambar); // G besar sesuai backend
 
-            const res = await axios.post(API_ENDPOINTS.TAMBAHFasilitas, formData, {
-                headers: { 'Content-Type': 'multipart/form-data' },
-            });
+    const res = await axios.post(API_ENDPOINTS.TAMBAHFasilitas, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
 
-            if (res.data.message) {
-                toast.current?.show({ severity: 'success', summary: 'Sukses', detail: 'Fasilitas berhasil ditambahkan', life: 3000 });
-                fetchData();
-            }
-        } catch (error) {
-            console.error('Gagal menambah data:', error);
-            toast.current?.show({ severity: 'error', summary: 'Gagal', detail: 'Gagal menambah fasilitas', life: 3000 });
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    if (res.data.data) {
+      // ✅ pastikan key Gambar besar dan tambahkan cache buster
+      const newData = {
+        ...res.data.data,
+        Gambar: res.data.data.Gambar ? res.data.data.Gambar + '?v=' + new Date().getTime() : null,
+      };
+      setFasilitas(prev => [...prev, newData]); // langsung muncul di datatable
 
-    // 🔹 Update data
-    const handleUpdate = async (id: string, judul: string, deskripsi: string, gambar: File | null) => {
-        try {
-            setIsLoading(true);
+      toast.current?.show({
+        severity: 'success',
+        summary: 'Sukses',
+        detail: 'Fasilitas berhasil ditambahkan',
+        life: 3000
+      });
+    }
+  } catch (error) {
+    console.error('Gagal menambah data:', error);
+    toast.current?.show({
+      severity: 'error',
+      summary: 'Gagal',
+      detail: 'Gagal menambah fasilitas',
+      life: 3000
+    });
+  } finally {
+    setIsLoading(false);
+  }
+};
 
-            const formData = new FormData();
-            if (judul) formData.append('judul', judul);
-            if (deskripsi) formData.append('deskripsi', deskripsi);
-            if (gambar instanceof File) formData.append('gambar', gambar);
-            formData.append('_method', 'PUT');
+// Update data
+const handleUpdate = async (id: string, judul: string, deskripsi: string, Gambar: File | null) => {
+  try {
+    setIsLoading(true);
 
-            await axios.post(API_ENDPOINTS.UPDATEFasilitas(id), formData, {
-                headers: { 'Content-Type': 'multipart/form-data' },
-            });
+    const formData = new FormData();
+    formData.append('judul', judul);
+    formData.append('deskripsi', deskripsi);
+    if (Gambar) formData.append('Gambar', Gambar); // huruf kecil sesuai backend
+    formData.append('_method', 'PUT');
 
-            toast.current?.show({ severity: 'success', summary: 'Sukses', detail: 'Fasilitas berhasil diupdate', life: 3000 });
-            fetchData();
-        } catch (error) {
-            console.error('Error updating data:', error);
-            toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Gagal update fasilitas', life: 3000 });
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    const res = await axios.post(API_ENDPOINTS.UPDATEFasilitas(id), formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+
+    if (res.data.data) {
+      // ✅ pakai Gambar besar supaya DataTable langsung update
+      const updatedData = {
+        ...res.data.data,
+        Gambar: res.data.data.Gambar ? res.data.data.Gambar + '?v=' + new Date().getTime() : null,
+      };
+      setFasilitas(prev => prev.map(f => f.id === id ? updatedData : f)); // replace item lama
+    }
+
+    toast.current?.show({
+      severity: 'success',
+      summary: 'Sukses',
+      detail: 'Fasilitas berhasil diupdate',
+      life: 3000
+    });
+  } catch (error) {
+    console.error('Gagal update data:', error);
+    toast.current?.show({
+      severity: 'error',
+      summary: 'Gagal',
+      detail: 'Gagal update fasilitas',
+      life: 3000
+    });
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
     // 🔹 Hapus data
     const handleDelete = async (id: string) => {
         try {
             setIsLoading(true);
             await axios.delete(API_ENDPOINTS.DELETEFasilitas(id));
-            toast.current?.show({ severity: 'success', summary: 'Sukses', detail: 'Fasilitas berhasil dihapus', life: 3000 });
-            fetchData();
+            setFasilitas(prev => prev.filter(f => f.id !== id));
+
+            toast.current?.show({
+                severity: 'success',
+                summary: 'Sukses',
+                detail: 'Fasilitas berhasil dihapus',
+                life: 3000
+            });
         } catch (error) {
             console.error('Error deleting data:', error);
-            toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Gagal hapus fasilitas', life: 3000 });
+            toast.current?.show({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Gagal hapus fasilitas',
+                life: 3000
+            });
         } finally {
             setIsLoading(false);
         }

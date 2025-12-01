@@ -63,9 +63,9 @@ const AppMenu = () => {
   // 🧭 Sidebar untuk operator (status = 2)
   const modelOperator: AppMenuItem[] = [
     {
-      label: "Dashboard",
+      label: "Beranda Admin",
       items: [
-        { label: "Dashboard", icon: "pi pi-fw pi-home", to: "/operator/" },
+        { label: "Beranda Admin", icon: "pi pi-fw pi-home", to: "/operator/" },
       ],
     },
     {
@@ -73,7 +73,7 @@ const AppMenu = () => {
       icon: "pi pi-folder-open",
       items: [
         {
-          label: "Landing",
+          label: "Beranda",
           icon: "pi pi-globe",
           to: "/operator/CMS_Landing",
         },
@@ -132,7 +132,7 @@ const AppMenu = () => {
   const modelAdmin: AppMenuItem[] = [
     {
       label: "Dashboard",
-      items: [{ label: "Admin Dashboard", icon: "pi pi-fw pi-home", to: "/admin/" }],
+      items: [{ label: "Beranda Admin", icon: "pi pi-fw pi-home", to: "/admin/" }],
     },
     {
       label: "Kelola Data Admin",
@@ -150,7 +150,7 @@ const AppMenu = () => {
       icon: "pi pi-folder-open",
       items: [
         {
-          label: "Landing",
+          label: "Beranda",
           icon: "pi pi-globe",
           to: "/operator/CMS_Landing",
         },

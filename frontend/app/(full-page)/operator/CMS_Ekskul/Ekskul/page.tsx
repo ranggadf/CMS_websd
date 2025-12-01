@@ -35,14 +35,14 @@ const EkskulPage = () => {
   };
 
   // 🔹 Tambah data (1 data per kali)
-  const handleAdd = async (judul: string, deskripsi: string, gambar: File | null) => {
+  const handleAdd = async (judul: string, deskripsi: string, Gambar: File | null) => {
     try {
       setIsLoading(true);
 
       const formData = new FormData();
       formData.append('judul', judul);
       formData.append('deskripsi', deskripsi);
-      if (gambar instanceof File) formData.append('Gambar', gambar);
+      if (Gambar instanceof File) formData.append('Gambar', Gambar);
 
       const res = await axios.post(API_ENDPOINTS.TAMBAHEkskul, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
@@ -71,14 +71,14 @@ const EkskulPage = () => {
   };
 
   // 🔹 Update data
-  const handleUpdate = async (id: string, judul: string, deskripsi: string, gambar: File | null) => {
+  const handleUpdate = async (id: string, judul: string, deskripsi: string, Gambar: File | null) => {
     try {
       setIsLoading(true);
 
       const formData = new FormData();
       if (judul) formData.append('judul', judul);
       if (deskripsi) formData.append('deskripsi', deskripsi);
-      if (gambar instanceof File) formData.append('Gambar', gambar);
+      if (Gambar instanceof File) formData.append('Gambar', Gambar);
       formData.append('_method', 'PUT');
 
       await axios.post(API_ENDPOINTS.UPDATEEkskul(id), formData, {

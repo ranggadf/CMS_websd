@@ -31,6 +31,20 @@ export default function KelolaOperatorPage() {
   const [operatorToDelete, setOperatorToDelete] = useState<Operator | null>(null);
   const toast = useRef<Toast>(null);
 
+  // error message
+  const [emailError, setEmailError] = useState<string>('');
+  const [phoneError, setPhoneError] = useState<string>('');
+
+  const validateEmail = (email: string) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
+
+  const validatePhone = (phone: string) => {
+    const regex = /^[0-9]{10,15}$/;
+    return regex.test(phone);
+  };
+
   // Ambil data operator
   const fetchOperators = async () => {
     setLoading(true);
@@ -52,19 +66,34 @@ export default function KelolaOperatorPage() {
     fetchOperators();
   }, []);
 
-  // Simpan operator (Tambah / Edit)
+  // Simpan operator
   const saveOperator = async () => {
     try {
       if (!selectedOperator) return;
 
+      // reset error
+      setEmailError('');
+      setPhoneError('');
+
+      // validasi email
+      if (!validateEmail(selectedOperator.email)) {
+        setEmailError('Format email tidak valid. Contoh: nama@email.com');
+        return;
+      }
+
+      // validasi phone
+      if (!validatePhone(selectedOperator.phone)) {
+        setPhoneError('Nomor telepon harus berupa angka 10–15 digit');
+        return;
+      }
+
       if (editMode && selectedOperator.id) {
-        // UPDATE operator (email sekarang bisa diubah)
         await axios.put(API_ENDPOINTS.UPDATEOperator(String(selectedOperator.id)), {
           name: selectedOperator.name,
-          email: selectedOperator.email, // ✅ email ikut dikirim
+          email: selectedOperator.email,
           phone: selectedOperator.phone,
           address: selectedOperator.address,
-          password: selectedOperator.password ? selectedOperator.password : undefined, // hanya kirim jika diisi
+          password: selectedOperator.password ? selectedOperator.password : undefined,
         });
 
         toast.current?.show({
@@ -74,7 +103,6 @@ export default function KelolaOperatorPage() {
           life: 3000,
         });
       } else {
-        // TAMBAH operator
         await axios.post(API_ENDPOINTS.TAMBAHOperator, selectedOperator);
         toast.current?.show({
           severity: 'success',
@@ -123,7 +151,6 @@ export default function KelolaOperatorPage() {
     }
   };
 
-  // Kolom Aksi
   const actionTemplate = (rowData: Operator) => (
     <div className="flex gap-2 justify-center">
       <Button
@@ -131,7 +158,6 @@ export default function KelolaOperatorPage() {
         rounded
         severity="info"
         onClick={() => {
-          // saat edit, password dikosongkan walau data lama ada hash
           setSelectedOperator({ ...rowData, password: '' });
           setEditMode(true);
           setDialogVisible(true);
@@ -179,32 +205,19 @@ export default function KelolaOperatorPage() {
           <ProgressSpinner />
         </div>
       ) : (
-        <DataTable
-  value={operators}
-  paginator
-  rows={10}
-  className="shadow-md rounded-lg"
-  stripedRows
-  responsiveLayout="scroll"
->
-  {/* <Column field="id" header="ID" style={{ width: '5%' }} /> */}
-  <Column field="name" header="Nama" style={{ width: '20%' }} />
-  <Column field="email" header="Email" style={{ width: '25%' }} />
-  <Column field="password" header="Password (Hash)" style={{ width: '25%' }} />
-  <Column field="phone" header="Telepon" style={{ width: '15%' }} />
-  <Column field="address" header="Alamat" style={{ width: '20%' }} />
-  <Column header="Aksi" body={actionTemplate} style={{ width: '15%' }} />
-</DataTable>
-
+        <DataTable value={operators} paginator rows={10} className="shadow-md rounded-lg" stripedRows responsiveLayout="scroll">
+          <Column field="name" header="Nama" />
+          <Column field="email" header="Email" />
+          <Column field="password" header="Password (Hash)" />
+          <Column field="phone" header="Telepon" />
+          <Column field="address" header="Alamat" />
+          <Column header="Aksi" body={actionTemplate} />
+        </DataTable>
       )}
 
       {/* DIALOG TAMBAH/EDIT */}
       <Dialog
-        header={
-          <div className="text-xl font-semibold text-gray-800">
-            {editMode ? 'Edit Data' : 'Tambah Data'}
-          </div>
-        }
+        header={<div className="text-xl font-semibold text-gray-800">{editMode ? 'Edit Data' : 'Tambah Data'}</div>}
         visible={dialogVisible}
         onHide={() => setDialogVisible(false)}
         style={{ width: '35rem' }}
@@ -212,101 +225,97 @@ export default function KelolaOperatorPage() {
         modal
       >
         <div className="space-y-4 mt-2">
+
           {/* Nama */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Nama
+              Nama <span className="text-red-600">*</span>
             </label>
             <InputText
               value={selectedOperator?.name || ''}
-              onChange={(e) =>
-                setSelectedOperator({ ...selectedOperator!, name: e.target.value })
-              }
+              onChange={(e) => setSelectedOperator({ ...selectedOperator!, name: e.target.value })}
               placeholder="Masukkan nama operator"
               className="w-full p-inputtext-sm"
             />
           </div>
 
-          {/* Email (sekarang selalu bisa diubah) */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email
-            </label>
-            <InputText
-              value={selectedOperator?.email || ''}
-              onChange={(e) =>
-                setSelectedOperator({
-                  ...selectedOperator!,
-                  email: e.target.value,
-                })
-              }
-              placeholder="Masukkan email operator"
-              className="w-full p-inputtext-sm"
-            />
-          </div>
+          {/* EMAIL */}
+          <label className="text-sm font-medium mb-1 block">
+            Email <span className="text-red-600">*</span>
+            <br />
+            <small className="text-gray-500">Masukkan email dengan format yang benar</small>
+          </label>
 
-          {/* Password */}
+          <InputText
+            value={selectedOperator?.email || ''}
+            onChange={(e) => {
+              setSelectedOperator({ ...selectedOperator!, email: e.target.value });
+              setEmailError('');
+            }}
+            placeholder="Masukkan email operator"
+            className={`w-full p-inputtext-sm ${emailError ? 'p-invalid' : ''}`}
+          />
+
+          {emailError && <small className="text-red-600 block mt-1">{emailError}</small>}
+
+          {/* PASSWORD */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Password {editMode ? '(kosongkan jika tidak diubah)' : ''}
+              Password <span className="text-red-600">*</span> {editMode ? '(kosongkan jika tidak diubah)' : ''}
             </label>
+
             <Password
               value={selectedOperator?.password || ''}
-              onChange={(e) =>
-                setSelectedOperator({
-                  ...selectedOperator!,
-                  password: e.target.value,
-                })
-              }
+              onChange={(e) => setSelectedOperator({ ...selectedOperator!, password: e.target.value })}
               toggleMask
               feedback={false}
               inputClassName="w-full p-inputtext-sm"
               placeholder={
-                editMode
-                  ? 'Kosongkan jika tidak ingin mengganti password'
-                  : 'Masukkan password'
+                editMode ? 'Kosongkan jika tidak ingin mengganti password' : 'Masukkan password'
               }
             />
           </div>
 
-          {/* Nomor Telepon */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Nomor Telepon
-            </label>
-            <InputText
-              value={selectedOperator?.phone || ''}
-              onChange={(e) =>
-                setSelectedOperator({ ...selectedOperator!, phone: e.target.value })
-              }
-              placeholder="Masukkan nomor telepon"
-              className="w-full p-inputtext-sm"
-            />
-          </div>
+          {/* NOMOR TELEPON */}
+          <label className="text-sm font-medium mb-1 block">
+            Nomor Telepon <span className="text-red-600">*</span>
+            <br />
+          
+          </label>
 
-          {/* Alamat */}
+          <InputText
+            value={selectedOperator?.phone || ''}
+            onChange={(e) => {
+              const value = e.target.value;
+
+              // hanya izinkan angka
+              if (/^[0-9]*$/.test(value)) {
+                setSelectedOperator({ ...selectedOperator!, phone: value });
+                setPhoneError('');
+              }
+            }}
+            placeholder="Masukkan nomor telepon"
+            className={`w-full p-inputtext-sm ${phoneError ? 'p-invalid' : ''}`}
+          />
+
+          {phoneError && <small className="text-red-600 block mt-1">{phoneError}</small>}
+
+          {/* ALAMAT */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Alamat
+              Alamat <span className="text-red-600">*</span>
             </label>
             <InputText
               value={selectedOperator?.address || ''}
-              onChange={(e) =>
-                setSelectedOperator({ ...selectedOperator!, address: e.target.value })
-              }
+              onChange={(e) => setSelectedOperator({ ...selectedOperator!, address: e.target.value })}
               placeholder="Masukkan alamat"
               className="w-full p-inputtext-sm"
             />
           </div>
 
-          {/* Tombol Aksi */}
+          {/* BUTTON */}
           <div className="flex justify-center gap-3 pt-3">
-            <Button
-              label="Batal"
-              icon="pi pi-times"
-              className="p-button-text text-blue-600"
-              onClick={() => setDialogVisible(false)}
-            />
+            <Button label="Batal" icon="pi pi-times" className="p-button-text text-blue-600" onClick={() => setDialogVisible(false)} />
             <Button
               label="Simpan"
               icon="pi pi-check"
@@ -317,7 +326,7 @@ export default function KelolaOperatorPage() {
         </div>
       </Dialog>
 
-      {/* DIALOG KONFIRMASI HAPUS */}
+      {/* DELETE DIALOG */}
       <Dialog
         visible={deleteDialog}
         onHide={() => setDeleteDialog(false)}
@@ -332,28 +341,14 @@ export default function KelolaOperatorPage() {
         }
         footer={
           <div className="flex justify-end gap-3">
-            <Button
-              label="Batal"
-              icon="pi pi-times"
-              className="p-button-text text-gray-600"
-              onClick={() => setDeleteDialog(false)}
-            />
-            <Button
-              label="Hapus"
-              icon="pi pi-trash"
-              severity="danger"
-              className="shadow-md"
-              onClick={deleteOperator}
-            />
+            <Button label="Batal" icon="pi pi-times" className="p-button-text text-gray-600" onClick={() => setDeleteDialog(false)} />
+            <Button label="Hapus" icon="pi pi-trash" severity="danger" className="shadow-md" onClick={deleteOperator} />
           </div>
         }
       >
         <p className="text-gray-700">
           Apakah Anda yakin ingin menghapus operator{' '}
-          <span className="font-semibold text-gray-900">
-            {operatorToDelete?.name}
-          </span>
-          ?
+          <span className="font-semibold text-gray-900">{operatorToDelete?.name}</span>?
         </p>
       </Dialog>
     </div>

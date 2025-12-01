@@ -38,10 +38,28 @@ const DataTableWithCRUDGuru: React.FC<DataTableWithCRUDGuruProps> = ({
        const [uploadStatus, setUploadStatus] = useState<string | null>(null);
        const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 const [deleteId, setDeleteId] = useState<string | null>(null);
+// Tambahkan di bagian atas component, bersama state lainnya
+const [filterKategori, setFilterKategori] = useState<string>('');
+
+// Tambahkan opsi "Semua Kategori" untuk dropdown filter
+const kategoriOptionsFilter = [
+    { label: 'Semua Kategori', value: '' },
+    { label: 'Kepala Sekolah', value: 'Kepala Sekolah' },
+    { label: 'Guru Mapel', value: 'Guru Mapel' },
+    { label: 'Guru Kelas', value: 'Guru Kelas' },
+    { label: 'Karyawan', value: 'Karyawan' },
+];
+
+// Filter data sebelum tampil di DataTable
+const filteredData = filterKategori
+    ? data.filter(item => item.kategori === filterKategori)
+    : data;
+
 
 
     const handleUpload = () => {
         setUploadStatus("success");
+        
 
         toast.current?.show({
             severity: "success",
@@ -80,9 +98,26 @@ const [deleteId, setDeleteId] = useState<string | null>(null);
 
     // === File Upload ===
     const handleFileSelect = (e: FileUploadSelectEvent) => {
-        const file = e.files[0];
-        setGambar(file);
-    };
+    const file = e.files[0];
+
+    console.log("File diterima:", file);
+    console.log("Tipe file:", file.type);
+
+    // validasi tipe MIME
+    const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+    if (!allowedTypes.includes(file.type)) {
+        toast.current?.show({
+            severity: "error",
+            summary: "Format tidak valid",
+            detail: "Gunakan file JPG, PNG, atau GIF.",
+            life: 3000,
+        });
+        return;
+    }
+
+    // simpan ke state untuk dikirim ke server
+    setGambar(file);
+};
 
     // === Add Data ===
     const handleAddData = () => {
@@ -154,24 +189,32 @@ const [deleteId, setDeleteId] = useState<string | null>(null);
         <>
             <Toast ref={toast} />
 
-            <div className="card">
-                <div className="flex justify-between items-center mb-3">
+            <div className="flex justify-between items-center mb-3 gap-3">
+    <Dropdown
+        value={filterKategori}
+        options={kategoriOptionsFilter}
+        onChange={(e) => setFilterKategori(e.value)}
+        placeholder="Filter Kategori"
+        className="w-48"
+    />
+    <Button label="Tambah Data" icon="pi pi-plus" onClick={openAddDialog} />
+</div>
 
-                    <Button label="Tambah Data" icon="pi pi-plus" onClick={openAddDialog} />
-                </div>
 
-                <DataTable value={data} loading={loading} paginator rows={10} responsiveLayout="scroll">
-                    {columns.map((col, i) => (
-                        <Column
-                            key={i}
-                            field={col.field}
-                            header={col.header}
-                            body={col.field.toLowerCase() === 'gambar' ? imageBodyTemplate : undefined}
-                        />
-                    ))}
-                    <Column header="Aksi" body={actionBodyTemplate} />
-                </DataTable>
-            </div>
+          <div className="card">
+    <DataTable value={filteredData} loading={loading} paginator rows={10} responsiveLayout="scroll">
+        {columns.map((col, i) => (
+            <Column
+                key={i}
+                field={col.field}
+                header={col.header}
+                body={col.field.toLowerCase() === 'gambar' ? imageBodyTemplate : undefined}
+            />
+        ))}
+        <Column header="Aksi" body={actionBodyTemplate} />
+    </DataTable>
+</div>
+
 
             {/* === Tambah Data === */}
             <Dialog

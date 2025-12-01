@@ -46,7 +46,7 @@ export const metadata: Metadata = {
         ttl: 604800
     },
     icons: {
-        icon: '/demo/images/logo/logosd.png'
+        icon: '/logosd.png'
     }
 };
 

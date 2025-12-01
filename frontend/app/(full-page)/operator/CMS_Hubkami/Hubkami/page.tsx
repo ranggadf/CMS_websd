@@ -67,7 +67,7 @@ export default function CMSHubungiKami() {
   return (
     <div className="p-5">
       <Toast ref={toast} />
-      <h1 className="text-2xl font-bold mb-4">CMS Hubungi Kami</h1>
+     
       <DataTableHubungiKami
         data={data}
         loading={loading}
