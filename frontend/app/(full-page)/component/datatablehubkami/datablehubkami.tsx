@@ -90,22 +90,6 @@ export default function DataTableHubungiKami({
         setShowEditDialog(false);
     };
 
-    // Hapus: === Tambah === dan handleAddData
-
-    // Hapus: === Hapus === dan confirmDelete/handleDeleteConfirm
-
-    // Ubah actionBodyTemplate untuk hanya menampilkan tombol Edit
-    const actionBodyTemplate = (rowData: HubungiKami) => (
-        <div className="flex gap-2">
-            <Button
-                icon="pi pi-pencil"
-                className="p-button-rounded p-button-info"
-                onClick={openEditDialog} // Sekarang tombol edit pada row memanggil openEditDialog
-            />
-            {/* Hapus tombol Hapus */}
-        </div>
-    );
-
     const dialogFooter = () => (
         <div className="flex justify-end gap-2">
             <Button label="Batal" icon="pi pi-times" onClick={() => setShowEditDialog(false)} className="p-button-text" />
@@ -137,7 +121,6 @@ export default function DataTableHubungiKami({
                         .map((col: any, i: number) => (
                             <Column key={i} field={col.field} header={col.header} sortable={false} />
                         ))}
-                    <Column header="Aksi" body={actionBodyTemplate} />
                 </DataTable>
             </div>
 

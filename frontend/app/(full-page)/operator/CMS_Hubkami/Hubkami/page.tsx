@@ -4,13 +4,13 @@ import axios from 'axios';
 import { Toast } from 'primereact/toast';
 import DataTableHubungiKami from '@/app/(full-page)/component/datatablehubkami/datablehubkami';
 import { API_ENDPOINTS } from '@/app/api/losbackend/api';
+// ... (fungsi getData, handleUpdate, columns tetap sama)
 
 export default function CMSHubungiKami() {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const toast = useRef<Toast>(null);
 
-    // Kolom ID tetap ada untuk keperluan update, tetapi disembunyikan di DataTable
     const columns = [
         { field: 'id', header: 'ID' },
         { field: 'judul', header: 'Judul' },
