@@ -35,6 +35,21 @@ const DataTableWithCRUDGuru: React.FC<DataTableWithCRUDGuruProps> = ({
     const [jabatan, setJabatan] = useState('');
     const [gambar, setGambar] = useState<File | null>(null);
     const toast = useRef<Toast>(null);
+       const [uploadStatus, setUploadStatus] = useState<string | null>(null);
+       const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+const [deleteId, setDeleteId] = useState<string | null>(null);
+
+
+    const handleUpload = () => {
+        setUploadStatus("success");
+
+        toast.current?.show({
+            severity: "success",
+            summary: "Berhasil Upload",
+            detail: "Gambar berhasil diunggah.",
+            life: 2500,
+        });
+    };
 
     // === Opsi dropdown kategori ===
     const kategoriOptions = [
@@ -93,10 +108,10 @@ const DataTableWithCRUDGuru: React.FC<DataTableWithCRUDGuruProps> = ({
 
     // === Delete Data ===
     const handleDeleteData = (id: string) => {
-        if (confirm('Yakin ingin menghapus data ini?')) {
-            onDelete(id);
-        }
-    };
+    setDeleteId(id);
+    setShowDeleteDialog(true);
+};
+
 
     // === Template Gambar ===
     const imageBodyTemplate = (rowData: any) => {
@@ -141,7 +156,7 @@ const DataTableWithCRUDGuru: React.FC<DataTableWithCRUDGuruProps> = ({
 
             <div className="card">
                 <div className="flex justify-between items-center mb-3">
-                    <h2 className="text-xl font-bold">Daftar Guru</h2>
+
                     <Button label="Tambah Data" icon="pi pi-plus" onClick={openAddDialog} />
                 </div>
 
@@ -188,16 +203,28 @@ const DataTableWithCRUDGuru: React.FC<DataTableWithCRUDGuruProps> = ({
                 </div>
                 <fieldset className="p-3 border-round border-1 border-gray-300">
                     <legend className="text-sm font-semibold">Upload Gambar</legend>
-                    <FileUpload
-                        mode="advanced"
-                        accept="image/*"
-                        customUpload
-                        chooseLabel="Pilih File"
-                        uploadLabel="Upload"
-                        cancelLabel="Batal"
-                        onSelect={handleFileSelect}
-                        emptyTemplate={<p className="m-0 text-sm text-gray-500">Seret dan lepas file di sini atau klik untuk memilih.</p>}
-                    />
+                     <FileUpload
+                                               mode="advanced"
+                                               accept="image/*"
+                                               customUpload
+                                               chooseLabel="Pilih File"
+                                               uploadLabel="Upload"
+                                               cancelLabel="Batal"
+                                               onSelect={handleFileSelect}
+                                               uploadHandler={handleUpload}
+                                               emptyTemplate={<p className="m-0 text-sm text-gray-500">Seret file ke sini atau klik untuk memilih.</p>}
+                                               itemTemplate={(file: any) => {
+                                                   const objectURL = file?.objectURL ?? URL.createObjectURL(file);
+                       
+                                                   return (
+                                                       <div className="p-fileupload-row flex items-center gap-3 py-2">
+                                                           <img src={objectURL} alt={file.name} className="w-5 h-5 object-cover rounded border" />
+                                                           <span className="text-sm">{file.name}</span>
+                                                       </div>
+                                                   );
+                                               }}
+                                           />
+                    
                 </fieldset>
             </Dialog>
 
@@ -231,18 +258,62 @@ const DataTableWithCRUDGuru: React.FC<DataTableWithCRUDGuruProps> = ({
                 </div>
                 <fieldset className="p-3 border-round border-1 border-gray-300">
                     <legend className="text-sm font-semibold">Ganti Gambar (opsional)</legend>
-                    <FileUpload
-                        mode="advanced"
-                        accept="image/*"
-                        customUpload
-                        chooseLabel="Pilih File"
-                        uploadLabel="Upload"
-                        cancelLabel="Batal"
-                        onSelect={handleFileSelect}
-                        emptyTemplate={<p className="m-0 text-sm text-gray-500">Seret dan lepas file di sini atau klik untuk memilih.</p>}
-                    />
+                     <FileUpload
+                                               mode="advanced"
+                                               accept="image/*"
+                                               customUpload
+                                               chooseLabel="Pilih File"
+                                               uploadLabel="Upload"
+                                               cancelLabel="Batal"
+                                               onSelect={handleFileSelect}
+                                               uploadHandler={handleUpload}
+                                               emptyTemplate={<p className="m-0 text-sm text-gray-500">Seret file ke sini atau klik untuk memilih.</p>}
+                                               itemTemplate={(file: any) => {
+                                                   const objectURL = file?.objectURL ?? URL.createObjectURL(file);
+                       
+                                                   return (
+                                                       <div className="p-fileupload-row flex items-center gap-3 py-2">
+                                                           <img src={objectURL} alt={file.name} className="w-5 h-5 object-cover rounded border" />
+                                                           <span className="text-sm">{file.name}</span>
+                                                       </div>
+                                                   );
+                                               }}
+                                           />
+                    
                 </fieldset>
             </Dialog>
+
+            {/* === Dialog Konfirmasi Hapus === */}
+<Dialog
+    header="Konfirmasi Hapus"
+    visible={showDeleteDialog}
+    modal
+    style={{ width: "25rem" }}
+    onHide={() => setShowDeleteDialog(false)}
+>
+    <p className="m-0">
+        Yakin ingin menghapus data ini? Tindakan ini tidak bisa dibatalkan.
+    </p>
+
+    <div className="flex justify-end gap-2 mt-4">
+        <Button
+            label="Batal"
+            icon="pi pi-times"
+            className="p-button-text"
+            onClick={() => setShowDeleteDialog(false)}
+        />
+        <Button
+            label="Hapus"
+            icon="pi pi-trash"
+            className="p-button-danger"
+            onClick={() => {
+                if (deleteId) onDelete(deleteId);
+                setShowDeleteDialog(false);
+            }}
+        />
+    </div>
+</Dialog>
+
         </>
     );
 };

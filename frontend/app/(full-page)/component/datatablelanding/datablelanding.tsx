@@ -46,6 +46,8 @@ const DataTableLanding: React.FC<DataTableLandingProps> = ({
   onUpdate,
   onDelete,
 }) => {
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
   const [showDialog, setShowDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [selectedData, setSelectedData] = useState<any>(null);
@@ -141,9 +143,12 @@ const DataTableLanding: React.FC<DataTableLandingProps> = ({
   };
 
   // 🗑️ Hapus
-  const handleDelete = (id: string) => {
-    if (confirm('Yakin ingin menghapus data ini?')) onDelete(id);
-  };
+const handleDelete = (id: string) => {
+  setDeleteId(id);
+  setShowDeleteDialog(true);
+};
+
+
 
   // 🖼️ Template gambar (seperti DataTable Profile)
 const imageBodyTemplate = (rowData: any) => {
@@ -300,6 +305,38 @@ const imageBodyTemplate = (rowData: any) => {
           <Button label="Simpan" icon="pi pi-check" onClick={showEditDialog ? handleUpdate : handleAdd} />
         </div>
       </Dialog>
+
+      {/* 🔴 Dialog Konfirmasi Hapus */}
+<Dialog
+  header="Konfirmasi Hapus"
+  visible={showDeleteDialog}
+  modal
+  style={{ width: "25rem" }}
+  onHide={() => setShowDeleteDialog(false)}
+>
+  <p className="m-0">
+    Yakin ingin menghapus data ini? Tindakan ini tidak bisa dibatalkan.
+  </p>
+
+  <div className="flex justify-end gap-2 mt-4">
+    <Button
+      label="Batal"
+      icon="pi pi-times"
+      className="p-button-text"
+      onClick={() => setShowDeleteDialog(false)}
+    />
+    <Button
+      label="Hapus"
+      icon="pi pi-trash"
+      className="p-button-danger"
+      onClick={() => {
+        if (deleteId) onDelete(deleteId);
+        setShowDeleteDialog(false);
+      }}
+    />
+  </div>
+</Dialog>
+
     </>
   );
 };

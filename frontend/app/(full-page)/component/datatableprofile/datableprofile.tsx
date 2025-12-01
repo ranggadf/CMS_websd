@@ -49,16 +49,16 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
     onAdd,
     onUpdate,
     onDelete,
-    nameField,
     nameField2,
     nameField3,
-    inputLabel,
     inputLabel2,
     inputLabel3,
 }) => {
     const [showDialog, setShowDialog] = useState(false);
     const [showEditDialog, setShowEditDialog] = useState(false);
     const [selectedData, setSelectedData] = useState<any>(null);
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+    const [deleteId, setDeleteId] = useState<string | null>(null);
 
     const [section, setSection] = useState('');
     const [judul, setJudul] = useState('');
@@ -67,11 +67,9 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
     const [email, setEmail] = useState('');
     const [alamat, setAlamat] = useState('');
     const [noTelp, setNoTelp] = useState('');
-    const [uploadStatus, setUploadStatus] = useState<string | null>(null);
-
-    const [filterSection, setFilterSection] = useState<string>(''); // 🔹 filter dropdown
 
     const toast = useRef<Toast>(null);
+    const [filterSection, setFilterSection] = useState<string>('');
 
     const sectionOptions = [
         { label: 'Semua Section', value: '' },
@@ -81,7 +79,7 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
         { label: 'Kontak', value: 'kontak' },
     ];
 
-    // === Filter data sesuai section ===
+    // === Filter Data ===
     const filteredData = useMemo(() => {
         if (!filterSection) return data;
         return data.filter((item) => item.section === filterSection);
@@ -92,9 +90,8 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
         const file = e.files[0];
         setGambar(file);
     };
-     const handleUpload = () => {
-        setUploadStatus("success");
 
+    const handleUpload = () => {
         toast.current?.show({
             severity: "success",
             summary: "Berhasil Upload",
@@ -116,16 +113,6 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
     };
 
     const handleAddData = () => {
-        if (!section || !judul || !konten) {
-            toast.current?.show({
-                severity: 'warn',
-                summary: 'Peringatan',
-                detail: 'Section, judul, dan konten wajib diisi',
-                life: 3000,
-            });
-            return;
-        }
-
         onAdd(section, judul, konten, gambar, email, alamat, noTelp);
         setShowDialog(false);
     };
@@ -151,23 +138,21 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
 
     // === Hapus ===
     const handleDeleteData = (id: string) => {
-        if (confirm('Yakin ingin menghapus data ini?')) {
-            onDelete(id);
-        }
+        setDeleteId(id);
+        setShowDeleteDialog(true);
     };
 
-    // === Tampilkan gambar ===
-  const imageBodyTemplate = (rowData: any) => {
-    const path = rowData.gambar;
-    return path ? (
-        <span className="text-gray-800">{path}</span>
-    ) : (
-        <span className="text-gray-500 italic">Tidak ada gambar</span>
-    );
-};
+    // === Template Gambar ===
+    const imageBodyTemplate = (rowData: any) => {
+        const path = rowData.gambar;
+        return path ? (
+            <span className="text-gray-800">{path}</span>
+        ) : (
+            <span className="text-gray-500 italic">Tidak ada gambar</span>
+        );
+    };
 
-
-    // === Tombol aksi ===
+    // === Tombol Aksi ===
     const actionBodyTemplate = (rowData: any) => (
         <div className="flex gap-2">
             <Button icon="pi pi-pencil" className="p-button-rounded p-button-info" onClick={() => openEditDialog(rowData)} />
@@ -175,7 +160,7 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
         </div>
     );
 
-    // === Footer Dialog ===
+    // === Dialog Footer ===
     const dialogFooter = (
         <div className="flex justify-end gap-2">
             <Button label="Batal" icon="pi pi-times" onClick={() => setShowDialog(false)} className="p-button-text" />
@@ -193,11 +178,12 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
     return (
         <>
             <Toast ref={toast} />
+
+            {/* === Header Table === */}
             <div className="card">
                 <div className="flex justify-between items-center mb-3 gap-3 flex-wrap">
                     <h2 className="text-xl font-bold">Daftar Profile Sekolah</h2>
                     <div className="flex gap-2 items-center">
-                        {/* 🔹 Filter Section */}
                         <Dropdown
                             value={filterSection}
                             options={sectionOptions}
@@ -209,14 +195,8 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
                     </div>
                 </div>
 
-                {/* === DataTable === */}
-                <DataTable
-                    value={filteredData}
-                    loading={loading}
-                    paginator
-                    rows={10}
-                    responsiveLayout="scroll"
-                >
+                {/* === Table === */}
+                <DataTable value={filteredData} loading={loading} paginator rows={10} responsiveLayout="scroll">
                     {columns.map((col, i) => (
                         <Column
                             key={i}
@@ -229,125 +209,144 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
                 </DataTable>
             </div>
 
-            {/* === Dialog Tambah === */}
+            {/* =========================== */}
+            {/* === Dialog Tambah Data === */}
+            {/* =========================== */}
             <Dialog header="Tambah Profile Sekolah" visible={showDialog} style={{ width: '40rem' }} modal onHide={() => setShowDialog(false)} footer={dialogFooter}>
+
                 <div className="field mb-3">
-                    <label htmlFor="section">Section</label>
-                    <Dropdown id="section" value={section} options={sectionOptions.slice(1)} onChange={(e) => setSection(e.value)} className="w-full" placeholder="Pilih Section" />
+                    <label>Section</label>
+                    <Dropdown value={section} options={sectionOptions.slice(1)} onChange={(e) => setSection(e.value)} className="w-full" placeholder="Pilih Section" />
                 </div>
 
                 <div className="field mb-3">
-                    <label htmlFor={nameField2}>{inputLabel2}</label>
-                    <InputText id={nameField2} value={judul} onChange={(e) => setJudul(e.target.value)} className="w-full" />
+                    <label>{inputLabel2}</label>
+                    <InputText value={judul} onChange={(e) => setJudul(e.target.value)} className="w-full" />
                 </div>
 
                 <div className="field mb-3">
-                    <label htmlFor={nameField3}>{inputLabel3}</label>
-                    <InputTextarea id={nameField3} rows={4} value={konten} onChange={(e) => setKonten(e.target.value)} className="w-full" />
+                    <label>{inputLabel3}</label>
+                    <InputTextarea rows={4} value={konten} onChange={(e) => setKonten(e.target.value)} className="w-full" />
                 </div>
 
+                {/* === Tambah Kontak === */}
                 {section === 'kontak' && (
                     <>
                         <div className="field mb-3">
-                            <label htmlFor="email">Email</label>
-                            <InputText id="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full" />
+                            <label>Email</label>
+                            <InputText value={email} onChange={(e) => setEmail(e.target.value)} className="w-full" />
                         </div>
+
                         <div className="field mb-3">
-                            <label htmlFor="alamat">Alamat</label>
-                            <InputTextarea id="alamat" rows={2} value={alamat} onChange={(e) => setAlamat(e.target.value)} className="w-full" />
+                            <label>Alamat</label>
+                            <InputTextarea rows={2} value={alamat} onChange={(e) => setAlamat(e.target.value)} className="w-full" />
                         </div>
+
                         <div className="field mb-3">
-                            <label htmlFor="no_telp">No. Telepon</label>
-                            <InputText id="no_telp" value={noTelp} onChange={(e) => setNoTelp(e.target.value)} className="w-full" />
+                            <label>No. Telepon</label>
+                            <InputText
+                                keyfilter="int"   // ✅ hanya angka
+                                value={noTelp}
+                                onChange={(e) => setNoTelp(e.target.value)}
+                                className="w-full"
+                            />
                         </div>
                     </>
                 )}
 
-                <fieldset className="p-3 border-round border-1 border-gray-300">
-                    <legend className="text-sm font-semibold">Upload Gambar</legend>
-                   <FileUpload
-                                              mode="advanced"
-                                              accept="image/*"
-                                              customUpload
-                                              chooseLabel="Pilih File"
-                                              uploadLabel="Upload"
-                                              cancelLabel="Batal"
-                                              onSelect={handleFileSelect}
-                                              uploadHandler={handleUpload}
-                                              emptyTemplate={<p className="m-0 text-sm text-gray-500">Seret file ke sini atau klik untuk memilih.</p>}
-                                              itemTemplate={(file: any) => {
-                                                  const objectURL = file?.objectURL ?? URL.createObjectURL(file);
-                      
-                                                  return (
-                                                      <div className="p-fileupload-row flex items-center gap-3 py-2">
-                                                          <img src={objectURL} alt={file.name} className="w-5 h-5 object-cover rounded border" />
-                                                          <span className="text-sm">{file.name}</span>
-                                                      </div>
-                                                  );
-                                              }}
-                                          />
-                </fieldset>
+                {/* === Upload Gambar — disembunyikan untuk kontak === */}
+                {section !== 'kontak' && (
+                    <fieldset className="p-3 border-round border-1 border-gray-300">
+                        <legend className="text-sm font-semibold">Upload Gambar</legend>
+                        <FileUpload
+                            mode="advanced"
+                            accept="image/*"
+                            customUpload
+                            chooseLabel="Pilih File"
+                            uploadLabel="Upload"
+                            cancelLabel="Batal"
+                            onSelect={handleFileSelect}
+                            uploadHandler={handleUpload}
+                            emptyTemplate={<p className="m-0 text-sm text-gray-500">Seret file ke sini atau klik untuk memilih.</p>}
+                        />
+                    </fieldset>
+                )}
+
             </Dialog>
 
-            {/* === Dialog Edit === */}
+            {/* ======================== */}
+            {/* === Dialog Edit Data === */}
+            {/* ======================== */}
             <Dialog header="Edit Profile Sekolah" visible={showEditDialog} style={{ width: '40rem' }} modal onHide={() => setShowEditDialog(false)} footer={editDialogFooter}>
+
                 <div className="field mb-3">
-                    <label htmlFor="section">Section</label>
-                    <Dropdown id="section" value={section} options={sectionOptions.slice(1)} onChange={(e) => setSection(e.value)} className="w-full" />
+                    <label>Section</label>
+                    <Dropdown value={section} options={sectionOptions.slice(1)} onChange={(e) => setSection(e.value)} className="w-full" />
                 </div>
 
                 <div className="field mb-3">
-                    <label htmlFor={nameField2}>{inputLabel2}</label>
-                    <InputText id={nameField2} value={judul} onChange={(e) => setJudul(e.target.value)} className="w-full" />
+                    <label>{inputLabel2}</label>
+                    <InputText value={judul} onChange={(e) => setJudul(e.target.value)} className="w-full" />
                 </div>
 
                 <div className="field mb-3">
-                    <label htmlFor={nameField3}>{inputLabel3}</label>
-                    <InputTextarea id={nameField3} rows={4} value={konten} onChange={(e) => setKonten(e.target.value)} className="w-full" />
+                    <label>{inputLabel3}</label>
+                    <InputTextarea rows={4} value={konten} onChange={(e) => setKonten(e.target.value)} className="w-full" />
                 </div>
 
+                {/* === Edit Kontak === */}
                 {section === 'kontak' && (
                     <>
                         <div className="field mb-3">
-                            <label htmlFor="email">Email</label>
-                            <InputText id="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full" />
+                            <label>Email</label>
+                            <InputText value={email} onChange={(e) => setEmail(e.target.value)} className="w-full" />
                         </div>
+
                         <div className="field mb-3">
-                            <label htmlFor="alamat">Alamat</label>
-                            <InputTextarea id="alamat" rows={2} value={alamat} onChange={(e) => setAlamat(e.target.value)} className="w-full" />
+                            <label>Alamat</label>
+                            <InputTextarea rows={2} value={alamat} onChange={(e) => setAlamat(e.target.value)} className="w-full" />
                         </div>
+
                         <div className="field mb-3">
-                            <label htmlFor="no_telp">No. Telepon</label>
-                            <InputText id="no_telp" value={noTelp} onChange={(e) => setNoTelp(e.target.value)} className="w-full" />
+                            <label>No. Telepon</label>
+                            <InputText
+                                keyfilter="int"   // ✅ hanya angka
+                                value={noTelp}
+                                onChange={(e) => setNoTelp(e.target.value)}
+                                className="w-full"
+                            />
                         </div>
                     </>
                 )}
 
-                <fieldset className="p-3 border-round border-1 border-gray-300">
-                    <legend className="text-sm font-semibold">Ganti Gambar (opsional)</legend>
-                  <FileUpload
-                                             mode="advanced"
-                                             accept="image/*"
-                                             customUpload
-                                             chooseLabel="Pilih File"
-                                             uploadLabel="Upload"
-                                             cancelLabel="Batal"
-                                             onSelect={handleFileSelect}
-                                             uploadHandler={handleUpload}
-                                             emptyTemplate={<p className="m-0 text-sm text-gray-500">Seret file ke sini atau klik untuk memilih.</p>}
-                                             itemTemplate={(file: any) => {
-                                                 const objectURL = file?.objectURL ?? URL.createObjectURL(file);
-                     
-                                                 return (
-                                                     <div className="p-fileupload-row flex items-center gap-3 py-2">
-                                                         <img src={objectURL} alt={file.name} className="w-5 h-5 object-cover rounded border" />
-                                                         <span className="text-sm">{file.name}</span>
-                                                     </div>
-                                                 );
-                                             }}
-                                         />
-                </fieldset>
+                {/* === Upload Gambar Edit (disembunyikan jika kontak) === */}
+                {section !== 'kontak' && (
+                    <fieldset className="p-3 border-round border-1 border-gray-300">
+                        <legend className="text-sm font-semibold">Ganti Gambar (opsional)</legend>
+                        <FileUpload
+                            mode="advanced"
+                            accept="image/*"
+                            customUpload
+                            chooseLabel="Pilih File"
+                            uploadLabel="Upload"
+                            cancelLabel="Batal"
+                            onSelect={handleFileSelect}
+                            uploadHandler={handleUpload}
+                        />
+                    </fieldset>
+                )}
+
             </Dialog>
+
+            {/* === Konfirmasi Hapus === */}
+            <Dialog header="Konfirmasi Hapus" visible={showDeleteDialog} style={{ width: '25rem' }} modal onHide={() => setShowDeleteDialog(false)}>
+                <p className="mb-4">Apakah Anda yakin ingin menghapus data ini?</p>
+                <div className="flex justify-end gap-2">
+                    <Button label="Batal" className="p-button-text" onClick={() => setShowDeleteDialog(false)} />
+                    <Button label="Hapus" className="p-button-danger" onClick={() => { if (deleteId) onDelete(deleteId); setShowDeleteDialog(false); }} />
+                </div>
+            </Dialog>
+
         </>
     );
 };

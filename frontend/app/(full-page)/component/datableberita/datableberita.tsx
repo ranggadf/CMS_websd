@@ -45,6 +45,9 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
     const [gambar, setGambar] = useState<File | null>(null);
     const toast = useRef<Toast>(null);
     const [uploadStatus, setUploadStatus] = useState<string | null>(null);
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+const [deleteId, setDeleteId] = useState<string | null>(null);
+
 
     // === Dialog Add ===
     const openAddDialog = () => {
@@ -105,10 +108,10 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
 
     // === Delete ===
     const handleDeleteData = (id: string) => {
-        if (confirm('Yakin ingin menghapus data ini?')) {
-            onDelete(id);
-        }
-    };
+    setDeleteId(id);
+    setShowDeleteDialog(true);
+};
+
 
     // === Tampilkan path gambar sebagai teks ===
     const imageBodyTemplate = (rowData: any) => {
@@ -266,6 +269,39 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
                                        />
                 </fieldset>
             </Dialog>
+
+            {/* === Delete Dialog === */}
+<Dialog
+    header="Konfirmasi Hapus"
+    visible={showDeleteDialog}
+    style={{ width: '25rem' }}
+    modal
+    onHide={() => setShowDeleteDialog(false)}
+>
+    <p className="mb-4 text-gray-700">
+        Apakah Anda yakin ingin menghapus data ini?
+    </p>
+
+    <div className="flex justify-end gap-2">
+        <Button
+            label="Batal"
+            icon="pi pi-times"
+            className="p-button-text"
+            onClick={() => setShowDeleteDialog(false)}
+        />
+
+        <Button
+            label="Hapus"
+            icon="pi pi-trash"
+            className="p-button-danger"
+            onClick={() => {
+                if (deleteId) onDelete(deleteId);
+                setShowDeleteDialog(false);
+            }}
+        />
+    </div>
+</Dialog>
+
         </>
     );
 };
