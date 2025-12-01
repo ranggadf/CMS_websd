@@ -24,7 +24,7 @@ class LandingController extends Controller
 
         $gambarPath = null;
         if ($request->hasFile('Gambar')) {
-            $gambarPath = $request->file('Gambar')->store('landing', 'public');
+            $gambarPath = $request->file('Gambar')->store('images', 'public');
         }
 
         $data = SectionLanding::create([
