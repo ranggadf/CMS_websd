@@ -9,7 +9,7 @@ class SectionLanding extends Model
 {
     use HasFactory;
     protected $table = 'section_landing';
-    public $timestamps = false;
+    public $timestamps = true;
     protected $fillable = [
         'id',
         'section',

@@ -13,33 +13,37 @@ class LandingController extends Controller
         return response()->json(SectionLanding::orderBy('id', 'asc')->get());
     }
 
-    public function tambahLanding(Request $request)
-    {
-        $request->validate([
-            'section' => 'required|string',
-            'judul' => 'required|string',
-            'deskripsi' => 'required|string',
-            'Gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        ]);
+   public function tambahLanding(Request $request)
+{
+    $request->validate([
+        'section' => 'required|string',
+        'judul' => 'required|string',
+        'deskripsi' => 'required|string',
+        'Gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+    ]);
 
-        $gambarPath = null;
-        if ($request->hasFile('Gambar')) {
-            $gambarPath = $request->file('Gambar')->store('images', 'public');
-        }
+    $gambarPath = null;
 
-        $data = SectionLanding::create([
-            'section' => $request->section,
-            'judul' => $request->judul,
-            'deskripsi' => $request->deskripsi,
-            'nama' => $request->nama,
-            'jml_siswa_laki' => $request->jml_siswa_laki,
-            'jml_siswa_perempuan' => $request->jml_siswa_perempuan,
-            'total_siswa' => $request->total_siswa,
-            'Gambar' => $gambarPath, // <-- gunakan huruf besar di sini juga
-        ]);
-
-        return response()->json($data, 201);
+    if ($request->hasFile('Gambar')) {
+        $file = $request->file('Gambar');
+        $filename = time() . '_' . $file->getClientOriginalName();
+        $file->move(public_path('images'), $filename);
+        $gambarPath = 'images/' . $filename; // path relatif untuk akses browser
     }
+
+    $data = SectionLanding::create([
+        'section' => $request->section,
+        'judul' => $request->judul,
+        'deskripsi' => $request->deskripsi,
+        'nama' => $request->nama,
+        'jml_siswa_laki' => $request->jml_siswa_laki,
+        'jml_siswa_perempuan' => $request->jml_siswa_perempuan,
+        'total_siswa' => $request->total_siswa,
+        'Gambar' => $gambarPath,
+    ]);
+
+    return response()->json($data, 201);
+}
 
     public function updateLanding(Request $request, $id)
     {
@@ -49,7 +53,7 @@ class LandingController extends Controller
             if ($data->Gambar && Storage::disk('public')->exists($data->Gambar)) {
                 Storage::disk('public')->delete($data->Gambar);
             }
-            $data->Gambar = $request->file('Gambar')->store('landing', 'public');
+            $data->Gambar = $request->file('Gambar')->store('images', 'public');
         }
 
         $data->update([
