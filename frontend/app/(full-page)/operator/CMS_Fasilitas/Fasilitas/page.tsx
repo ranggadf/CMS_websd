@@ -6,21 +6,21 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import DataTableWithCRUD from '@/app/(full-page)/component/datablefasilitas/datablefasilitas';
 import { API_ENDPOINTS } from '@/app/api/losbackend/api';
 
-const FasilitasPage = () => {
-    const [fasilitas, setFasilitas] = useState<any[]>([]);
+const CMSFasilitas = () => {
+    const [fasilitasList, setFasilitasList] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const toast = useRef<Toast>(null);
 
+    // Ambil data saat komponen dimuat
     useEffect(() => {
         fetchData();
     }, []);
 
-    // 🔹 Ambil data fasilitas
     const fetchData = async () => {
         setIsLoading(true);
         try {
-            const res = await axios.get(API_ENDPOINTS.GETFasilitas);
-            setFasilitas(res.data);
+            const response = await axios.get(API_ENDPOINTS.GETFasilitas);
+            setFasilitasList(response.data);
         } catch (error) {
             console.error('Error fetching data:', error);
             toast.current?.show({
@@ -34,149 +34,123 @@ const FasilitasPage = () => {
         }
     };
 
-    // 🔹 Tambah data
-// Tambah data
-// Tambah data
-const handleAdd = async (judul: string, deskripsi: string, Gambar: File | null) => {
-  try {
-    setIsLoading(true);
+    // Tambah data
+    const handleAdd = async (judul: string, deskripsi: string, Gambar: File | null) => {
+        try {
+            const formData = new FormData();
+            formData.append('judul', judul);
+            formData.append('deskripsi', deskripsi);
+            if (Gambar) formData.append('Gambar', Gambar);
 
-    const formData = new FormData();
-    formData.append('judul', judul);
-    formData.append('deskripsi', deskripsi);
-    if (Gambar) formData.append('Gambar', Gambar); // G besar sesuai backend
+            await axios.post(API_ENDPOINTS.TAMBAHFasilitas, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            toast.current?.show({
+                severity: 'success',
+                summary: 'Berhasil',
+                detail: 'Data berhasil ditambahkan',
+                life: 2500
+            });
+            fetchData();
+        } catch (error) {
+            console.error('Error adding data:', error);
+            toast.current?.show({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Gagal menambahkan data',
+                life: 3000
+            });
+        }
+    };
 
-    const res = await axios.post(API_ENDPOINTS.TAMBAHFasilitas, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    // Update data
+    const handleUpdate = async (id: string, judul: string, deskripsi: string, Gambar: File | null) => {
+    try {
+      setIsLoading(true);
 
-    if (res.data.data) {
-      // ✅ pastikan key Gambar besar dan tambahkan cache buster
-      const newData = {
-        ...res.data.data,
-        Gambar: res.data.data.Gambar ? res.data.data.Gambar + '?v=' + new Date().getTime() : null,
-      };
-      setFasilitas(prev => [...prev, newData]); // langsung muncul di datatable
+      const formData = new FormData();
+      if (judul) formData.append('judul', judul);
+      if (deskripsi) formData.append('deskripsi', deskripsi);
+      if (Gambar instanceof File) formData.append('Gambar', Gambar);
+      formData.append('_method', 'PUT');
+
+      await axios.post(API_ENDPOINTS.UPDATEFasilitas(id), formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
 
       toast.current?.show({
         severity: 'success',
         summary: 'Sukses',
-        detail: 'Fasilitas berhasil ditambahkan',
-        life: 3000
+        detail: 'Data ekstrakurikuler berhasil diupdate',
+        life: 3000,
       });
+      fetchData();
+    } catch (error) {
+      console.error('Error updating data:', error);
+      toast.current?.show({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Gagal update data ekstrakurikuler',
+        life: 3000,
+      });
+    } finally {
+      setIsLoading(false);
     }
-  } catch (error) {
-    console.error('Gagal menambah data:', error);
-    toast.current?.show({
-      severity: 'error',
-      summary: 'Gagal',
-      detail: 'Gagal menambah fasilitas',
-      life: 3000
-    });
-  } finally {
-    setIsLoading(false);
-  }
-};
-
-// Update data
-const handleUpdate = async (id: string, judul: string, deskripsi: string, Gambar: File | null) => {
-  try {
-    setIsLoading(true);
-
-    const formData = new FormData();
-    formData.append('judul', judul);
-    formData.append('deskripsi', deskripsi);
-    if (Gambar) formData.append('Gambar', Gambar); // huruf kecil sesuai backend
-    formData.append('_method', 'PUT');
-
-    const res = await axios.post(API_ENDPOINTS.UPDATEFasilitas(id), formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
-
-    if (res.data.data) {
-      // ✅ pakai Gambar besar supaya DataTable langsung update
-      const updatedData = {
-        ...res.data.data,
-        Gambar: res.data.data.Gambar ? res.data.data.Gambar + '?v=' + new Date().getTime() : null,
-      };
-      setFasilitas(prev => prev.map(f => f.id === id ? updatedData : f)); // replace item lama
-    }
-
-    toast.current?.show({
-      severity: 'success',
-      summary: 'Sukses',
-      detail: 'Fasilitas berhasil diupdate',
-      life: 3000
-    });
-  } catch (error) {
-    console.error('Gagal update data:', error);
-    toast.current?.show({
-      severity: 'error',
-      summary: 'Gagal',
-      detail: 'Gagal update fasilitas',
-      life: 3000
-    });
-  } finally {
-    setIsLoading(false);
-  }
-};
-
-
-    // 🔹 Hapus data
+  };
+    // Hapus data
     const handleDelete = async (id: string) => {
         try {
-            setIsLoading(true);
             await axios.delete(API_ENDPOINTS.DELETEFasilitas(id));
-            setFasilitas(prev => prev.filter(f => f.id !== id));
-
             toast.current?.show({
                 severity: 'success',
-                summary: 'Sukses',
-                detail: 'Fasilitas berhasil dihapus',
-                life: 3000
+                summary: 'Berhasil',
+                detail: 'Data berhasil dihapus',
+                life: 2500
             });
+            fetchData();
         } catch (error) {
             console.error('Error deleting data:', error);
             toast.current?.show({
                 severity: 'error',
                 summary: 'Error',
-                detail: 'Gagal hapus fasilitas',
+                detail: 'Gagal menghapus data',
                 life: 3000
             });
-        } finally {
-            setIsLoading(false);
         }
     };
 
     return (
-        <>
+        <div className="p-4">
             <Toast ref={toast} />
+
+            <h1 className="text-2xl font-bold mb-4">CMS Fasilitas</h1>
+
             {isLoading ? (
-                <div className="flex justify-content-center align-items-center h-40">
-                    <ProgressSpinner style={{ width: '40px', height: '40px' }} strokeWidth="6" />
+                <div className="flex justify-center items-center h-64">
+                    <ProgressSpinner />
                 </div>
             ) : (
                 <DataTableWithCRUD
-                    data={fasilitas}
+                    data={fasilitasList}
                     loading={isLoading}
                     columns={[
                         { field: 'judul', header: 'Judul' },
                         { field: 'deskripsi', header: 'Deskripsi' },
-                        { field: 'Gambar', header: 'Gambar' },
+                        { field: 'Gambar', header: 'Gambar' }
                     ]}
                     onAdd={handleAdd}
                     onUpdate={handleUpdate}
                     onDelete={handleDelete}
                     nameField="judul"
-                    nameField2="deskripsi"
-                    nameField3="Gambar"
+                    nameField2="judul"
+                    nameField3="deskripsi"
                     inputLabel="Judul"
-                    inputLabel2="Deskripsi"
-                    inputLabel3="Gambar"
+                    inputLabel2="Judul"
+                    inputLabel3="Deskripsi"
                 />
             )}
-        </>
+        </div>
     );
 };
 
-export default FasilitasPage;
+export default CMSFasilitas;

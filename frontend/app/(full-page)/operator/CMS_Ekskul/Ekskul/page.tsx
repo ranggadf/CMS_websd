@@ -35,40 +35,33 @@ const EkskulPage = () => {
   };
 
   // 🔹 Tambah data (1 data per kali)
-  const handleAdd = async (judul: string, deskripsi: string, Gambar: File | null) => {
-    try {
-      setIsLoading(true);
+ const handleAdd = async (judul: string, deskripsi: string, Gambar: File | null) => {
+        try {
+            const formData = new FormData();
+            formData.append('judul', judul);
+            formData.append('deskripsi', deskripsi);
+            if (Gambar) formData.append('Gambar', Gambar);
 
-      const formData = new FormData();
-      formData.append('judul', judul);
-      formData.append('deskripsi', deskripsi);
-      if (Gambar instanceof File) formData.append('Gambar', Gambar);
-
-      const res = await axios.post(API_ENDPOINTS.TAMBAHEkskul, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-
-      if (res.data.message) {
-        toast.current?.show({
-          severity: 'success',
-          summary: 'Sukses',
-          detail: 'Ekstrakurikuler berhasil ditambahkan',
-          life: 3000,
-        });
-        fetchData();
-      }
-    } catch (error) {
-      console.error('Gagal menambah data:', error);
-      toast.current?.show({
-        severity: 'error',
-        summary: 'Gagal',
-        detail: 'Gagal menambah data ekstrakurikuler',
-        life: 3000,
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+            await axios.post(API_ENDPOINTS.TAMBAHEkskul, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            toast.current?.show({
+                severity: 'success',
+                summary: 'Berhasil',
+                detail: 'Data berhasil ditambahkan',
+                life: 2500
+            });
+            fetchData();
+        } catch (error) {
+            console.error('Error adding data:', error);
+            toast.current?.show({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Gagal menambahkan data',
+                life: 3000
+            });
+        }
+    };
 
   // 🔹 Update data
   const handleUpdate = async (id: string, judul: string, deskripsi: string, Gambar: File | null) => {

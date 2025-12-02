@@ -243,14 +243,14 @@ const [deleteId, setDeleteId] = useState<string | null>(null);
 
 
 
-{/* STATUS TEXT */}
+{/* STATUS TEXT
 {uploadStatus === "selected" && (
     <p className="text-yellow-600 text-sm mt-2">File dipilih, klik upload…</p>
 )}
 
 {uploadStatus === "success" && (
     <p className="text-green-600 text-sm mt-2">Upload berhasil ✓</p>
-)}
+)} */}
 
                 </fieldset>
             </Dialog>
@@ -273,7 +273,7 @@ const [deleteId, setDeleteId] = useState<string | null>(null);
                     <InputText id={nameField2} value={deskripsi} onChange={(e) => setDeskripsi(e.target.value)} className="w-full" />
                 </div>
                 <fieldset className="p-3 border-round border-1 border-gray-300">
-                    <legend className="text-sm font-semibold">Ganti Gambar (opsional)</legend>
+                    <legend className="text-sm font-semibold"></legend>
 <FileUpload
                         mode="advanced"
                         accept="image/*"
