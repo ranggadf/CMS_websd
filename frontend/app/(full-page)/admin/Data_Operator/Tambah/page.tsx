@@ -178,7 +178,7 @@ export default function KelolaOperatorPage() {
 
       {/* HEADER */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-5 gap-3">
-        <h1 className="text-2xl font-semibold text-gray-800">Kelola Data Admin</h1>
+        
         <Button
           label="Tambah Admin"
           icon="pi pi-plus"

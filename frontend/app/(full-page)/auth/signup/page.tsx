@@ -26,7 +26,7 @@ const SignupPage = () => {
         password: '',
         phone: '',
         address: '',
-        status: 2
+        status: 1
     });
 
 

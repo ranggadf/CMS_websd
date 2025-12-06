@@ -66,46 +66,54 @@ const LoginPage = () => {
                     <h1 className="text-3xl mb-2 text-gray-800">Selamat Datang di</h1>
                     <h2 className="text-5xl font-bold mb-6 text-gray-900">MANAJEMEN KONTEN WEB SDN 01 MANGUHARJO</h2>
 
-                    <form onSubmit={handleSubmit} className="mt-8">
-                        <div className="mb-4">
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                                Email
-                            </label>
-                            <InputText
-                                id="email"
-                                type="email"
-                                placeholder="Masukkan Email"
-                                className="w-full p-3 border border-gray-300 rounded-md"
-                                value={email}
-                                onChange={handleEmailChange}
-                            />
-                        </div>
+                   <form onSubmit={handleSubmit} className="mt-8">
+    <div className="mb-4">
+        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+            Email
+        </label>
+        <InputText
+            id="email"
+            type="email"
+            placeholder="Masukkan Email"
+            className="w-full p-3 border border-gray-300 rounded-md"
+            value={email}
+            onChange={handleEmailChange}
+        />
+    </div>
 
-                        <div className="mb-6">
-                            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                                Password
-                            </label>
-                            <Password
-                                inputId="password"
-                                placeholder="Masukkan Password"
-                                toggleMask
-                                className="w-full"
-                                inputClassName="w-full p-3 border border-gray-300 rounded-md"
-                                weakLabel="Lemah"
-                                mediumLabel="Sedang"
-                                strongLabel="Kuat"
-                                promptLabel="Masukkan kata sandi"
-                                value={password}
-                                onChange={handlePasswordChange}
-                            />
-                        </div>
+    <div className="mb-6">
+        <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+            Password
+        </label>
+        <Password
+            inputId="password"
+            placeholder="Masukkan Password"
+            toggleMask
+            className="w-full"
+            inputClassName="w-full p-3 border border-gray-300 rounded-md"
+            weakLabel="Lemah"
+            mediumLabel="Sedang"
+            strongLabel="Kuat"
+            promptLabel="Masukkan kata sandi"
+            value={password}
+            onChange={handlePasswordChange}
+        />
+    </div>
 
-                        <Button
-                            label={isLoading ? 'Memproses...' : 'Masuk'}
-                            className="border-none w-full p-3 text-xl text-white font-semibold transition-all duration-300 ease-in-out"
-                            style={{ backgroundColor: '#ff0000' }}
-                        />
-                    </form>
+    {/* 🔥 ALERT ERROR LOGIN */}
+    {showAlert && (
+        <p className="text-red-600 text-sm mb-4">
+            Email atau password salah!
+        </p>
+    )}
+
+    <Button
+        label={isLoading ? 'Memproses...' : 'Masuk'}
+        className="border-none w-full p-3 text-xl text-white font-semibold transition-all duration-300 ease-in-out"
+        style={{ backgroundColor: '#ff0000' }}
+    />
+</form>
+
                 </div>
             </div>
 
