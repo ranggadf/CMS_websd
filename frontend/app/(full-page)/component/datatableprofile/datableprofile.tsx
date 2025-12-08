@@ -244,12 +244,13 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
 
                         <div className="field mb-3">
                             <label>No. Telepon</label>
-                            <InputText
-                                keyfilter="int"   // ✅ hanya angka
-                                value={noTelp}
-                                onChange={(e) => setNoTelp(e.target.value)}
-                                className="w-full"
-                            />
+                           <InputText
+    type="number"
+    value={noTelp}
+    onChange={(e) => setNoTelp(e.target.value)}
+    className="w-full"
+/>
+
                         </div>
                     </>
                 )}
@@ -309,12 +310,13 @@ const DataTableWithCRUD: React.FC<DataTableWithCRUDProps> = ({
 
                         <div className="field mb-3">
                             <label>No. Telepon</label>
-                            <InputText
-                                keyfilter="int"   // ✅ hanya angka
-                                value={noTelp}
-                                onChange={(e) => setNoTelp(e.target.value)}
-                                className="w-full"
-                            />
+                         <InputText
+    type="number"
+    value={noTelp}
+    onChange={(e) => setNoTelp(e.target.value)}
+    className="w-full"
+/>
+
                         </div>
                     </>
                 )}

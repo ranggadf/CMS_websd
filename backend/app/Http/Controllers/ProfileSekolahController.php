@@ -68,7 +68,10 @@ class ProfileSekolahController extends Controller
         $profile->konten = $request->konten ?? $profile->konten;
         $profile->email = $request->email ?? $profile->email;
         $profile->alamat = $request->alamat ?? $profile->alamat;
-        $profile->no_telp = $request->no_telp ?? $profile->no_telp;
+      if ($request->has('no_telp')) {
+    $profile->no_telp = $request->no_telp;
+}
+
 
         // ✅ Ganti gambar jika upload baru
         if ($request->hasFile('gambar')) {
